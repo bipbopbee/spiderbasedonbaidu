@@ -1,4 +1,3 @@
-#输出log位置的文件名、函数名、行号
 #coding=utf-8
 import inspect
 
