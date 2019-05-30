@@ -1,4 +1,3 @@
-#日志模块
 import logging
 import datetime
 import time
