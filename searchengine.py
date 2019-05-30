@@ -54,9 +54,19 @@ def getvideoadress(url):
     strUrlfilter = r'(?:https|http)://.+?\.(?:mp4|m3u8|mkv)'
     pattern = re.compile(strUrlfilter)
     return pattern.findall(strData)
-def main():
+
+def main(argv):
+    argc = len(sys.argv)
+    keyword = ''
+    if argc == 1:
+        print 'Useage:python searchengine.py {keyword1} {keyword2} ...'
+        return
+    for i in range(len(sys.argv)):
+        if i == 0:
+            continue
+        keyword = keyword + sys.argv[i] + ' '
+    print keyword
     url = "http://www.baidu.com/s?"
-    keyword = '战狼 在线观看'
     searchcount = 50
     n = 0
     data = getsearchpagebykeyword(url, keyword)
@@ -68,7 +78,7 @@ def main():
         data = geturlpage(url[:-3] + nexturl)
         n = n + 1
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
 
 
     
