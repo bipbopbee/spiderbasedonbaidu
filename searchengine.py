@@ -56,16 +56,15 @@ def getvideoadress(url):
     return pattern.findall(strData)
 
 def main(argv):
-    argc = len(sys.argv)
+    argc = len(argv)
     keyword = ''
     if argc == 1:
         print 'Useage:python searchengine.py {keyword1} {keyword2} ...'
         return
-    for i in range(len(sys.argv)):
+    for i in range(argc):
         if i == 0:
             continue
-        keyword = keyword + sys.argv[i] + ' '
-    print keyword
+        keyword = keyword + argv[i] + ' '
     url = "http://www.baidu.com/s?"
     searchcount = 50
     n = 0
@@ -74,7 +73,6 @@ def main(argv):
         websiteslist, nexturl = resolvepagedata(data)
         for website in websiteslist:
             print getvideoadress(website)
-        print url[:-3] + nexturl
         data = geturlpage(url[:-3] + nexturl)
         n = n + 1
 if __name__ == '__main__':
