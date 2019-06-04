@@ -11,7 +11,8 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 from bs4 import BeautifulSoup
 import socket
-socket.setdefaulttimeout(10.0) 
+socket.setdefaulttimeout(10.0)
+from opredis import lpush
 
 def getsearchpagebykeyword(url, keyword):
     strWd = {'wd':keyword}
@@ -72,7 +73,8 @@ def main(argv):
     while n < searchcount:
         websiteslist, nexturl = resolvepagedata(data)
         for website in websiteslist:
-            print getvideoadress(website)
+            #print getvideoadress(website)
+            lpush('myspider:start_urls', website)
         data = geturlpage(url[:-3] + nexturl)
         n = n + 1
 if __name__ == '__main__':
