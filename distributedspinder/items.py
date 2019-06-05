@@ -22,3 +22,10 @@ class ExampleLoader(ItemLoader):
     default_input_processor = MapCompose(lambda s: s.strip())
     default_output_processor = TakeFirst()
     description_out = Join()
+
+
+
+class VideoinfoItem(Item):
+    videoname = Field()
+    website = Field()
+    videolink = Field()
