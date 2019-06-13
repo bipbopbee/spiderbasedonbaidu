@@ -78,7 +78,8 @@ def main(argv):
         data = geturlpage(url[:-3] + nexturl)
         n = n + 1
 if __name__ == '__main__':
-    main(sys.argv)
+    lpush('myspider:start_urls', 'https://youku.com/')
+    #main(sys.argv)
 
 
     
