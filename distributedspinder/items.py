@@ -27,6 +27,7 @@ class ExampleLoader(ItemLoader):
 
 class VideoinfoItem(Item):
     title = Field()
-    subtitle = Field()
+    videourl = Field()
+    actors = Field()
     videourl = Field()
     productinfo = Field()
