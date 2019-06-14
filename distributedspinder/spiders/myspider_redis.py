@@ -17,21 +17,29 @@ class MySpider(RedisSpider):
         domain = kwargs.pop('domain', '')
         self.allowed_domains = filter(None, domain.split(','))
         super(MySpider, self).__init__(*args, **kwargs)
-#for link in objSoup.find_all(name='a', attrs={'href':re.compile(r'^http:')}):
-#        arrList.append(link.get('href'))
-    def parse(self, response):
-        node_list = response.xpath('//div[@class="pack_info_list"]')
-        for node in node_list:
-            title = node.xpath('.//a/text()').extract_first()
-            subtitle = node.xpath('//div[@class="pack_subtitle"]/text()').extract_first()
-            detail_url = node.xpath('.//a/@href').extract_first()
-            self.logger.debug("标题:" + title)
-            self.logger.debug('子标题：' + subtitle)
-            self.logger.debug('详情页：http:' + detail_url)
-            yield scrapy.Request(url = 'http:' + detail_url, meta = {'title':title,'subtitle':subtitle},
-                                callback=self.parse_detail, dont_filter=True)
 
-        # request_url=
+    def parse(self, response):
+        node_list = response.xpath('//ul[@class="info-list"]')
+        for node in node_list:
+            title = node.xpath('./li[@class="title"]/a/text()').extract_first()
+            xactors = node.xpath('./li[@class="actor"]/a')
+            actors = []
+            for actor in xactors:
+               actors.append(actor.xpath('text()').extract_first())
+               actors.append(' ')
+            detail_url = node.xpath('./li[@class="title"]/a/@href').extract_first()
+            self.logger.debug("标题:" + title)
+            if len(actors) != 0:
+                self.logger.debug('演员:' + ''.join(actors))
+            self.logger.debug('详情页：http:' + detail_url)
+            yield scrapy.Request(url = 'http:' + detail_url, meta = {'title':title,'actors':actors},
+                                callback=self.parse_detail, dont_filter=True)
+        next_url = response.xpath('//li[@class="next"]/a/@href').extract_first()
+        if next_url is None:
+            pass
+        else:
+            self.logger.debug('下一页：' + next_url)
+            yield scrapy.Request(url = 'http:' + next_url, callback=self.parse)
 
     def parse_detail(self, response):
         #item = VideoinfoItem()
