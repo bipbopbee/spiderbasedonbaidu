@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy_redis.spiders import RedisSpider
-from ..items import CopyrightobserverItem
+from CopyrightObserver.items import CopyrightobserverItem
 import re
 #解决utf8 code问题
 import sys
@@ -25,7 +25,7 @@ class VideoobserverSpider(RedisSpider):
             item['videourl']  = pattern.findall(data)
             yield item
         else:
-            nexturls = response.xpath('//a/@href')
+            nexturls = response.xpath('//a/@href').extract()
             for nexturl in nexturls:
                 yield scrapy.Request(url = nexturl, callback = self.parse_nextpage, dont_filter=True)
     
