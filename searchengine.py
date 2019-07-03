@@ -53,6 +53,8 @@ def getvideoadress(url):
     strData = geturlpage(url)
     strUrlfilter = r'(?:https|http)://.+?\.(?:mp4|m3u8|mkv)'
     pattern = re.compile(strUrlfilter)
+    if len(pattern.findall(strData)) > 0:
+        print url
     return pattern.findall(strData)
 
 def main(argv):
