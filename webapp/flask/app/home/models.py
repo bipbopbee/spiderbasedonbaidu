@@ -10,7 +10,7 @@ from app.models import *
 from sqlalchemy import func, union_all
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.common import avatar
-
+import json
 PREFIX = "home_"
 
 
@@ -22,6 +22,11 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(255), unique=True, nullable=False, index=True, default="")
     email = db.Column(db.String(255), nullable=False, index=True)
     password =  db.Column(db.String(255), default="", nullable=False)
+    
+    "盗版监测"
+    apitoken = db.Column(db.String(255), unique = True, nullable = False, index = True, default = "")
+    role = db.Column(db.String(255), unique = True, nullable = False, index = True, default = "")
+    "盗版监测"
 
     cover = db.Column(db.String(255), default="")           # 封面图片文件名
     avatar = db.Column(db.String(255),  default="")           # 用户头像文件名
@@ -30,17 +35,20 @@ class User(UserMixin, db.Model):
     updatetime = db.Column(db.DateTime, default = datetime.now, nullable=False)      # 更新时间
     timestamp = db.Column(db.DateTime, default = datetime.now, nullable=False)       # 创建时间
 
+
     profile = db.relationship("UserProfile", backref="user", lazy="select", uselist=False)
 
     articles = db.relationship("Article", backref="user", lazy="dynamic")
 
     @staticmethod
-    def new(username, email, password):
+    def new(username, email, password, api_token, role):
         user = User()
         user.username = username
         user.email = email
         user.password = User.generate_password_hash(password)
         user.avatar = avatar.init_avatar()
+        user.apitoken = api_token
+        user.role = role
         db.session.add(user)
         db.session.commit()
         UserProfile = app.user.models.UserProfile
