@@ -11,7 +11,9 @@ from .ajax import auth_dispath_ajax, dispath_ajax
 import random
 import app
 from app.common import avatar
-
+from .curl2python import *
+from flask import jsonify
+import json
 @home.route("/")
 def index():
     Article = app.article.models.Article
@@ -71,7 +73,14 @@ def register():
         if User.query.filter_by(email = form.email.data).first():
             form.email.errors.append("该名称已经存在")
             return render_template("home/register.html", form = form)
-        user = User.new(form.username.data, form.email.data, form.password.data)
+        
+        headers = {"Authorization": "BHJjhgFTty866r"}
+        rtnstr = usercreate(form.email.data, form.username.data, headers)
+        print 'debug'
+        print rtnstr
+        j = json.loads(rtnstr)
+        
+        user = User.new(form.username.data, form.email.data, form.password.data, j[data][api_token], j[data][role])
         login_user(user)
         return redirect(url_for("user.index", id=user.id))
     return render_template("home/register.html", form=form)
