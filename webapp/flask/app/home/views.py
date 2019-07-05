@@ -74,13 +74,13 @@ def register():
             form.email.errors.append("该名称已经存在")
             return render_template("home/register.html", form = form)
         
-        headers = {"Authorization": "BHJjhgFTty866r"}
-        rtnstr = usercreate(form.email.data, form.username.data, headers)
-        print 'debug'
-        print rtnstr
-        j = json.loads(rtnstr)
+        # headers = {"Authorization": "BHJjhgFTty866r"}
+        # rtnstr = usercreate(form.email.data, form.username.data, headers)
+        # print 'debug'
+        # print rtnstr
+        # j = json.loads(rtnstr)
         
-        user = User.new(form.username.data, form.email.data, form.password.data, j[data][api_token], j[data][role])
+        user = User.new(form.username.data, form.email.data, form.password.data)
         login_user(user)
         return redirect(url_for("user.index", id=user.id))
     return render_template("home/register.html", form=form)
