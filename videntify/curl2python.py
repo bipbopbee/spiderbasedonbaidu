@@ -1,6 +1,7 @@
 #coding=utf-8
 import requests
 import os
+import time
 BASE_URL = "http://39.97.164.155/api/v1"
 """
 用户操作定义
@@ -54,22 +55,25 @@ ACTION_USER_INFOMATION = "/users"
 def insertlocalfile(filepath, headers):
     if os.path.isfile(filepath):
         file = open(filepath, 'rb')
-        payload = {'file': file}
-        res = requests.post(BASE_URL + ACTION_INSERT, headers, files = payload)
+        payload = {"file": file}
+        print payload
+        print headers
+        print BASE_URL + ACTION_INSERT
+        res = requests.post(BASE_URL + ACTION_INSERT, headers = headers, files = payload)
         return res
 def asyncinsertlocalfile(filepath, headers):
     if os.path.isfile(filepath):
         file = open(filepath, 'rb')
         payload = {'file': file}
-        res = requests.post(BASE_URL + ACTION_INSERT_ASYNC, headers, files = payload)
+        res = requests.post(BASE_URL + ACTION_INSERT_ASYNC, headers = headers, files = payload)
         return res
 def inserturl(url, headers):
     payload = {'download_url': url}
-    res = requests.post(BASE_URL + ACTION_INSERT, headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_INSERT, headers = headers, files = payload)
     return res
 def asyncinserturl(url, headers):
     payload = {'download_url': url}
-    res = requests.post(BASE_URL + ACTION_INSERT_ASYNC, headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_INSERT_ASYNC, headers = headers, files = payload)
     return res
 """
 查询匹配
@@ -145,29 +149,29 @@ def querylocalfile(filepath, headers):
     if os.path.isfile(filepath):
         file = open(filepath, 'rb')
         payload = {'file': file}
-        res = requests.post(BASE_URL + ACTION_QUERY, headers, files = payload)
+        res = requests.post(BASE_URL + ACTION_QUERY, headers = headers, files = payload)
         return res
 def asyncquerylocalfile(filepath, headers):
     if os.path.isfile(filepath):
         file = open(filepath, 'rb')
         payload = {'file': file}
-        res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers, files = payload)
+        res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, files = payload)
         return res
 def queryurl(url, headers):
     payload = {'download_url': url}
-    res = requests.post(BASE_URL + ACTION_QUERY, headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_QUERY, headers = headers, files = payload)
     return res
 def asyncqueryurl(url, headers):
     payload = {'download_url': url}
-    res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, files = payload)
     return res
 def querycontentid(content_id, headers):
     payload = {'content_id': content_id}
-    res = requests.post(BASE_URL + ACTION_QUERY, headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_QUERY, headers = headers, files = payload)
     return res
 def aysncquerycontentid(content_id, headers):
     payload = {'content_id': content_id}
-    res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, files = payload)
     return res
 """
 使用within mode查询，只对视频有效
@@ -177,19 +181,19 @@ def queywithinfile(filepath, headers):
     if os.path.isfile(filepath):
         file = open(filepath, 'rb')
         payload = {'file': file}
-        res = requests.post(BASE_URL + ACTION_QUERY_WITHIN, headers, files = payload)
+        res = requests.post(BASE_URL + ACTION_QUERY_WITHIN, headers = headers, files = payload)
         return res
 def asyncquerywithfile(filepath ,headers):
     if os.path.isfile(filepath):
         file = open(filepath, 'rb')
         payload = {'file': file}
-        res = requests.post(BASE_URL + ACTION_QUERY_WITHIN_ASYNC, headers, files = payload)
+        res = requests.post(BASE_URL + ACTION_QUERY_WITHIN_ASYNC, headers = headers, files = payload)
         return res
 """
 async insert/query时，服务器后台生成的jobs操作
 """
 def queryjobstatus(jobid, headers):
-    res = requests.post(BASE_URL + ACTION_JOBS + "/" + jobid, headers)
+    res = requests.post(BASE_URL + ACTION_JOBS + "/" + jobid, headers = headers)
     return res
 """
 查询已经查询过的结果
@@ -209,39 +213,39 @@ def queryjobstatus(jobid, headers):
 """
 ##link = /5?access_token=6CChvv3IHhfi6Q8IL1Y6QRNvytayHbF6
 def querypersistedresult(link, headers):
-    res = requests.post(BASE_URL + ACTION_QUERY_PERSISTED_RESULT + link, headers)
+    res = requests.post(BASE_URL + ACTION_QUERY_PERSISTED_RESULT + link, headers = headers)
     return res
 def querywithinpersistedresult(link ,headers):
-    res = requests.post(BASE_URL + ACTION_QUERY_WITHIN_PERSISTED_RESULT + link, headers)
+    res = requests.post(BASE_URL + ACTION_QUERY_WITHIN_PERSISTED_RESULT + link, headers = headers)
     return res
 
 def useraccount(headers):
-    res = requests.post(BASE_URL + ACTION_USER_ACCOUNT, headers)
+    res = requests.post(BASE_URL + ACTION_USER_ACCOUNT, headers = headers)
     return res
 def userinfomation(id, headers):
-    res = requests.post(BASE_URL + ACTION_USER_INFOMATION + "/" + id, headers)
+    res = requests.post(BASE_URL + ACTION_USER_INFOMATION + "/" + id, headers = headers)
     return res
 def userlist(headers):
-    res = requests.post(BASE_URL + ACTION_USERS_LIST, headers)
+    res = requests.post(BASE_URL + ACTION_USERS_LIST, headers = headers)
     return res
 def usercreate(email, name, headers):
     files = {"email":email, "username":name}
-    res = requests.post(BASE_URL + ACTION_USERS_CREATE, headers, files = files)
+    res = requests.post(BASE_URL + ACTION_USERS_CREATE, headers = headers, files = files)
     return res
 def userdelete(id, headers):
-    res = requests.post(BASE_URL + ACTION_USERS_DELETE + "/" + id, headers)
+    res = requests.post(BASE_URL + ACTION_USERS_DELETE + "/" + id, headers = headers)
     return res
 def updatemetadata(content_id, headers):
-    res = requests.delete(BASE_URL + ACTION_UPDATE_METADATA + "/" + content_id + "/metadata", headers)
+    res = requests.delete(BASE_URL + ACTION_UPDATE_METADATA + "/" + content_id + "/metadata", headers = headers)
     return res
 def getcontentinfo(content_id, headers):
-    res = requests.post(BASE_URL + ACTION_CONTENT + "/" + content_id, headers)
+    res = requests.post(BASE_URL + ACTION_CONTENT + "/" + content_id, headers = headers)
     return res
 def listcontents(headers):
-    res = requests.post(BASE_URL + ACTION_CONTENT, headers)
+    res = requests.post(BASE_URL + ACTION_CONTENT, headers = headers)
     return res
 def deletecontent(content_id, headers):
-    res = requests.delete(BASE_URL + ACTION_CONTENT + "/" + content_id, headers)
+    res = requests.delete(BASE_URL + ACTION_CONTENT + "/" + content_id, headers = headers)
     return res
 def getdbinfo(headers):
     print BASE_URL + ACTION_GET_DB_INFO
