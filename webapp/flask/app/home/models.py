@@ -41,14 +41,12 @@ class User(UserMixin, db.Model):
     articles = db.relationship("Article", backref="user", lazy="dynamic")
 
     @staticmethod
-    def new(username, email, password, api_token, role):
+    def new(username, email, password):
         user = User()
         user.username = username
         user.email = email
         user.password = User.generate_password_hash(password)
         user.avatar = avatar.init_avatar()
-        user.apitoken = api_token
-        user.role = role
         db.session.add(user)
         db.session.commit()
         UserProfile = app.user.models.UserProfile
