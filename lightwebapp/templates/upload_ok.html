@@ -13,7 +13,10 @@
         <input type="text" class="txt_input" name="name"  value="请输入关键词" style="margin-top:10px;"/>
         <input type="submit" value="上传" class="button-new" style="margin-top:15px;"/>
     </form>
-    <h1>关键词是：{{userinput}}！</h1>
-    <img src="{{ url_for('static', filename= './images/test.jpg',_t=val1) }}" width="400" height="400" alt="你的图片被外星人劫持了～～"/>
+    <h1>关键词是：{{userinput}}</h1>
+    <!--<img src="{{ url_for('static', filename= './images/test.jpg',_t=val1) }}" width="400" height="400" alt="你的图片被外星人劫持了～～"/>-->
+    <h1>contentid：{{contentid}}</h1>
+    <h1>error:{{error}}</h1>
+    <h1><a href="/search">盗版查询</a></h1>
 </body>
 </html>
