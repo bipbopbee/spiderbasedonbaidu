@@ -2,13 +2,13 @@
 from flask import Flask, render_template, request, redirect, url_for, make_response,jsonify
 from werkzeug.utils import secure_filename
 import os
-import cv2
 import time
 from datetime import timedelta
-from curl2python import *
 import json
 import sys
 from searchengine import *
+sys.path.append("..")
+from videntify import curl2python
 #设置允许的文件格式
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'PNG', 'bmp', 'mp4'])
  
