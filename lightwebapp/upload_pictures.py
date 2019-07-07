@@ -9,6 +9,15 @@ import sys
 sys.path.append("..")
 from videntify import curl2python
 from searchengines import searchengine
+import threading
+import pymysql
+coon = pymysql.connect(
+    host = '127.0.0.1',user = 'root',passwd = 'abc',
+    port = 3306,db = 'videoright',charset = 'utf8'
+    #port必须写int类型
+    #charset必须写utf8，不能写utf-8
+)
+cursor = conn.cursor()
 #设置允许的文件格式
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'PNG', 'bmp', 'mp4'])
  
@@ -55,9 +64,17 @@ def search():
     if request.method == 'POST':
         keyword = request.form.get('keyword')
         print keyword
-        start_search(keyword)
+        #start_search(keyword)
+        t = threading.Thread(target = start_search, args=(keyword))
+        t.start()
         pass
-    return render_template('search.html')
+    return render_template('search_result.html')
+@app.route('/update', methods=['POST','GET'])
+def update():
+    cursor.execute("select *  from privacy")
+    collections = cursor.fetchall()
+    print collections
+    return collections
 if __name__ == '__main__':
     # app.debug = True
     app.run(host='0.0.0.0', port=5000, debug=True)
