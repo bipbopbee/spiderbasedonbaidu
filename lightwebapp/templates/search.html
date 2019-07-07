@@ -4,6 +4,33 @@
     <meta charset="UTF-8">
     <title>盗版监测平台上传演示</title>
 </head>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script>
+//别忘了导入该用的js文件
+function subForm() {
+    $.ajax({
+        url: '/data/', //请求的url
+        type: 'post', //请求的方式
+        data: $('#formAddtr').serialize(), //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
+        error:function (data) {
+            alert('请求失败');
+        },
+        success:function (data) {
+            var str1 = "";
+            //清空table中的html
+            $("#test").html("");
+            for(var i = 0;i<data.data.length;i++){
+                str1 = "<tr>" + 
+                    "<td>"+data.data[i].user_id + "</td>" +
+                    "<td>"+data.data[i].user_id + "</td>" +
+                    "<td>"+data.data[i].user_id + "</td>" +
+                    "</tr>";
+                $("#test").append(str1);
+            }
+        }
+    });
+}
+</script>
 <body>
     <h1>盗版监测平台演示</h1>
     <form action="/search" enctype='multipart/form-data' method='POST'>
@@ -11,5 +38,15 @@
         <input type="text" class="txt_input" name="keyword"  value="" style="margin-top:10px;"/>
         <input type="submit" value="搜索" class="button-new" style="margin-top:15px;"/>
     </form>
+    <table>
+        <thead>
+        <th>privacyid</th>
+        <th>detailurl</th>
+        <th>rightname</th>
+        <th>contentid</th>
+        </thead>
+        <tbody id="test">
+        </tbody>
+    </table>
 </body>
 </html>
