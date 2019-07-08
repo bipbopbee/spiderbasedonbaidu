@@ -23,11 +23,11 @@ function subForm() {
             var str1 = "";
             //清空table中的html
             $("#test").html("");
-            for(var i = 0;i<data['data'].length;i++){
+            for(var i = 0;i<obj.data.length;i++){
                 str1 = "<tr>" + 
-                    "<td>"+data.data[i].user_id + "</td>" +
-                    "<td>"+data.data[i].user_id + "</td>" +
-                    "<td>"+data.data[i].user_id + "</td>" +
+                    "<td>"+obj.data[i][0] + "</td>" +
+                    "<td>"+obj.data[i][1] + "</td>" +
+                    "<td>"+obj.data[i][2] + "</td>" +
                     "</tr>";
                 $("#test").append(str1);
             }
