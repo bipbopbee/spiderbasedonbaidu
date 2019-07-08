@@ -8,11 +8,11 @@ import json
 import sys
 sys.path.append("..")
 from videntify import curl2python
-from searchengines import searchengine
+from searchengines.searchengine import *
 import threading
 import pymysql
-coon = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = 'abc',
+conn = pymysql.connect(
+    host = '127.0.0.1',user = 'root',passwd = '123456',
     port = 3306,db = 'videoright',charset = 'utf8'
     #port必须写int类型
     #charset必须写utf8，不能写utf-8
@@ -65,16 +65,18 @@ def search():
         keyword = request.form.get('keyword')
         print keyword
         #start_search(keyword)
-        t = threading.Thread(target = start_search, args=(keyword))
+        t = threading.Thread(target = start_search, args=(keyword,))
         t.start()
-        pass
-    return render_template('search_result.html')
+        return render_template('search.html')
+    return render_template('search.html')
 @app.route('/update', methods=['POST','GET'])
 def update():
     cursor.execute("select *  from privacy")
     collections = cursor.fetchall()
     print collections
-    return collections
+    t = {}
+    t['data'] = collections
+    return json.dumps(t,ensure_ascii=False)
 if __name__ == '__main__':
     # app.debug = True
     app.run(host='0.0.0.0', port=5000, debug=True)
