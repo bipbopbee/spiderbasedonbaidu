@@ -18,7 +18,8 @@ create table `right` (
 );
 create table `privacy` (
     `privacyid` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `url` int (11) NOT NULL,
+    `url` varchar (150) NOT NULL,
     `rightname` varchar (150) NOT NULL,
     `contentid` int (11) NOT NULL
 );
+insert into privacy (privacyid, url, rightname, contentid)  values (NULL, 'www.baidu.com','神奇', 22);
