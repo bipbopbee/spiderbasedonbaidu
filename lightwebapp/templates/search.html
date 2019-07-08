@@ -9,17 +9,21 @@
 //别忘了导入该用的js文件
 function subForm() {
     $.ajax({
-        url: '/data/', //请求的url
+        url: '/update', //请求的url
         type: 'post', //请求的方式
-        data: $('#formAddtr').serialize(), //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
+        //data: $('#keyword').serialize(), //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
         error:function (data) {
             alert('请求失败');
         },
         success:function (data) {
+            alert(data)
+            var obj = $.parseJSON(data)
+            alert(obj.data)
+            alert(obj.data.length)
             var str1 = "";
             //清空table中的html
             $("#test").html("");
-            for(var i = 0;i<data.data.length;i++){
+            for(var i = 0;i<data['data'].length;i++){
                 str1 = "<tr>" + 
                     "<td>"+data.data[i].user_id + "</td>" +
                     "<td>"+data.data[i].user_id + "</td>" +
@@ -35,8 +39,8 @@ function subForm() {
     <h1>盗版监测平台演示</h1>
     <form action="/search" enctype='multipart/form-data' method='POST'>
         <i>输入搜索关键词：</i>
-        <input type="text" class="txt_input" name="keyword"  value="" style="margin-top:10px;"/>
-        <input type="submit" value="搜索" class="button-new" style="margin-top:15px;"/>
+        <input type="text" class="txt_input" name="keyword"  value="" style="margin-top:10px;" id="keyword"/>
+        <input type="submit" value="搜索" class="button-new" style="margin-top:15px;" onclick="subForm()"/>
     </form>
     <table>
         <thead>
