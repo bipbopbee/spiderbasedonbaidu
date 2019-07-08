@@ -68,11 +68,12 @@ def start_search(keyword):
     while True:
         websiteslist, nexturl = resolvepagedata(data)
         for website in websiteslist:
-            print getvideoadress(website)
-            #lpush('myspider:start_urls', website)
+            #print getvideoadress(website)
+            lpush('myspider:start_urls', website)
         data = geturlpage(url[:-3] + nexturl)
         if nexturl is None:
             break
+    return
         #n = n + 1
 def main(argv):
     argc = len(argv)
