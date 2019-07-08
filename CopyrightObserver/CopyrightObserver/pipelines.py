@@ -8,10 +8,10 @@ import json
 import sys
 import threading
 import pymysql
-sys.path.append("../..")
-from videntify import *
+sys.path.append("../../..")
+from videntify.curl2python import *
 headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
-coon = pymysql.connect(
+conn = pymysql.connect(
     host = '127.0.0.1',user = 'root',passwd = 'abc',
     port = 3306,db = 'videoright',charset = 'utf8'
     #port必须写int类型
@@ -50,8 +50,8 @@ def threading_jobquey(detailurl, headers, jobid):
                 cursor.execute(sql)
                 coon.commit()
             break
-        else if status == 'error':
+        elif status == 'error':
             break
-        else if status == 'cancelled':
+        elif status == 'cancelled':
             break
     pass
