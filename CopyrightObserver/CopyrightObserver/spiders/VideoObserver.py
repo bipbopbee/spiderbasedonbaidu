@@ -22,7 +22,7 @@ class VideoobserverSpider(RedisSpider):
                 return
             item = CopyrightobserverItem()
             item['detailurl'] = response.url
-            item['videourl']  = pattern.findall(data)
+            item['videourl']  = pattern.findall(data)[0]
             yield item
         else:
             nexturls = response.xpath('//a/@href').extract()
