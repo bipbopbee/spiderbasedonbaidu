@@ -27,7 +27,7 @@ class CopyrightobserverPipeline(object):
         detailurl = item['detailurl']
         jobidstr = asyncqueryurl(item['videourl'], headers)
         jobid = json.loads(jobidstr)['data']['job']['id']
-        t = threading.thread(target = threading_jobquey, args=(detailurl, headers, jobid))
+        t = threading.Thread(target = threading_jobquey, args=(detailurl, headers, jobid))
         t.start()
         return item
 
@@ -48,7 +48,7 @@ def threading_jobquey(detailurl, headers, jobid):
                 sql = "insert into privacy (url, privacyname, contentid) values ("
                 sql = sql + detailurl + "，" + "  ," + contentid + ")"
                 cursor.execute(sql)
-                coon.commit()
+                conn.commit()
             break
         elif status == 'error':
             break
