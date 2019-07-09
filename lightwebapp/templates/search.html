@@ -7,23 +7,26 @@
 <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 <script>
 //别忘了导入该用的js文件
-function subForm() {
+function update(){
     $.ajax({
         url: '/update', //请求的url
         type: 'post', //请求的方式
+        timeout:2000,
+        async:true,
         //data: $('#keyword').serialize(), //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
         error:function (data) {
-            alert('请求失败');
+           // alert('请求失败');
         },
         success:function (data) {
-            alert(data)
+            //alert(data)
             var obj = $.parseJSON(data)
-            alert(obj.data)
-            alert(obj.data.length)
+            //alert(obj.data)
+            //alert(obj.data.length)
             var str1 = "";
             //清空table中的html
             $("#test").html("");
             for(var i = 0;i<obj.data.length;i++){
+                //alert(obj.data[i][2])
                 str1 = "<tr>" + 
                     "<td>"+obj.data[i][0] + "</td>" +
                     "<td>"+obj.data[i][1] + "</td>" +
@@ -34,14 +37,29 @@ function subForm() {
         }
     });
 }
+function subForm() {
+    $.ajax({
+        url: '/search', //请求的url
+        type: 'post', //请求的方式
+        timeout:2000,
+        async:true,
+        dataType:'json',
+        data: {'keyword':$("#keyword").val()}, //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
+        error:function (data) {
+            alert('请求失败');
+        },
+        success:function (data) {
+            //alert(data)
+        }
+    });
+    setInterval("update();",2000);
+}
 </script>
 <body>
     <h1>盗版监测平台演示</h1>
-    <form action="/search" enctype='multipart/form-data' method='POST'>
         <i>输入搜索关键词：</i>
         <input type="text" class="txt_input" name="keyword"  value="" style="margin-top:10px;" id="keyword"/>
-        <input type="submit" value="搜索" class="button-new" style="margin-top:15px;" onclick="subForm()"/>
-    </form>
+        <input type="button" title="搜索" class="button-new" style="margin-top:15px;" onclick="subForm()">搜索</button>
     <table>
         <thead>
         <th>privacyid</th>
