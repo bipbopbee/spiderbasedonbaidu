@@ -7,19 +7,19 @@ from datetime import timedelta
 import json
 import sys
 sys.path.append("..")
-from videntify import curl2python
+from videntify.curl2python import *
 from searchengines.searchengine import *
 import threading
 import pymysql
 conn = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = '123456',
+    host = '127.0.0.1',user = 'root',passwd = 'abc',
     port = 3306,db = 'videoright',charset = 'utf8'
     #port必须写int类型
     #charset必须写utf8，不能写utf-8
 )
 cursor = conn.cursor()
 #设置允许的文件格式
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'PNG', 'bmp', 'mp4'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'PNG', 'bmp', 'mp4', 'desc72'])
  
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -48,13 +48,18 @@ def upload():
         f.save(upload_path)
         
         headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
-        res = insertlocalfile(upload_path, headers)
-        result = json.loads(res.text)
-        if result['error']:
-            error = result['error']['message']
-        else:
-           content_id = result['data']['content']['contend_id']
- 
+        # res = insertlocalfile(upload_path, headers)
+        # result = json.loads(res.text)
+
+        # if not result['error'] is None:
+        #     error = result['error']['message']
+        # else:
+        #    content_id = result['data']['content']['contend_id']
+        jobidstr = asyncinsertlocalfile(upload_path, headers)
+        jobid = json.loads(jobidstr)['data']['job']['id']
+        t = threading.Thread(target = threading_jobinsert, args=(user_input, headers, jobid))
+        t.start()
+
         return render_template('upload_ok.html',userinput=user_input,contentid = content_id, error = error, val1=time.time())
  
     return render_template('upload.html')
@@ -77,6 +82,27 @@ def update():
     t = {}
     t['data'] = collections
     return json.dumps(t,ensure_ascii=False)
+def threading_jobinsert(rightname, headers, jobid):
+    while True:
+        statusstr = queryjobstatus(jobid, headers = headers)
+        print statusstr + jobid
+        status = json.loads(statusstr)['data']['job']['status']
+        time.sleep(1)
+        if status == 'finished':
+            link = json.loads(statusstr)['data']['job']['result_url']
+            datastr = querypersistedresult(link, headers)
+            contentid = json.loads(datastr)['data']['content']['content_id']
+            sql = "insert into ritht_tmp (rightname, url, email, contentid) values ("
+            sql = sql + rightname + "，" + "NULL," + "516854715@qq.com," + contentid + ")"
+            cursor.execute(sql)
+            conn.commit()
+            break
+        elif status == 'error':
+            return render_template('upload_ok.html',userinput=user_input,contentid = content_id, error = json.loads(statusstr)['data']['job']['error'], val1=time.time())
+            break
+        elif status == 'cancelled':
+            break
+    pass
 if __name__ == '__main__':
     # app.debug = True
     app.run(host='0.0.0.0', port=5000, debug=True)
