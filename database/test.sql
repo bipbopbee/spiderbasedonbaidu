@@ -11,7 +11,13 @@ create table `user` (
 create table `right` (
     `rightid` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `rightname` varchar (150) NOT NULL,
-    `publishers` varchar (150) NOT NULL,
+    `url` varchar (150) NOT NULL,
+    `email` varchar (150) NOT NULL,
+    `contentid` int (11) NOT NULL
+);
+create table `right_tmp` (
+    `rightid` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `rightname` varchar (150) NOT NULL,
     `url` varchar (150) NOT NULL,
     `email` varchar (150) NOT NULL,
     `contentid` int (11) NOT NULL
