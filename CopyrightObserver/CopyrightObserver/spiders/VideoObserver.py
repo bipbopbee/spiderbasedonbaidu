@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy_redis.spiders import RedisSpider
-from CopyrightObserver.items import CopyrightobserverItem
+from CopyrightObserver.CopyrightObserver.items import CopyrightobserverItem
 import re
 #解决utf8 code问题
 import sys
@@ -15,7 +15,7 @@ class VideoobserverSpider(RedisSpider):
 
     def parse(self, response):
         data = response.body
-        strUrlfilter = r'(?:https|http)://.+?\.(?:mp4|m3u8|mkv)'
+        strUrlfilter = r'(?:https|http)://.+?\.(?:mp4|m3u8|mkv|MP4|M3U8|MKV)'
         pattern = re.compile(strUrlfilter)
         if len(pattern.findall(data)) > 0:
             if len(pattern.findall(data)[0]) > 100:
