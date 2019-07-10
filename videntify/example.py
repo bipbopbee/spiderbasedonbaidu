@@ -4,7 +4,12 @@ import urllib2
 import requests
 import os
 from requests.auth import  HTTPBasicAuth
+import sys
+sys.path.append("..")
 from curl2python import *
+import scrapy
+from scrapy.crawler import CrawlerProcess
+from CopyrightObserver.CopyrightObserver.spiders.VideoObserver import VideoobserverSpider
 header = {"Authorization" : "LWtrKgMmLIeAWyyDUlLa"}
 url = "http://39.97.164.155/api/v1/"
 action_contents = "contents"
@@ -26,14 +31,19 @@ def put_byrequest():
     res = requests.put(url + action_contents + "/240254/metadata", headers = headers)
     print res.text
 if __name__ == '__main__':
-     headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
-     payload = {'download_url': 'http://127.0.0.1:5000/static/images/2.MP4'}
-     res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, data = payload)
-     print res.text
-     print asyncqueryurl('http://127.0.0.1:5000/static/images/2.MP4', headers)
-    #post_byrequest()
-    #delete_byrequest()
-    #put_byrequest()
-    #post_byurllib2()
+    #  headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
+    #  payload = {'download_url': 'http://127.0.0.1:5000/static/images/2.MP4'}
+    #  res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, data = payload)
+    #  print res.text
+    #  print asyncqueryurl('http://127.0.0.1:5000/static/images/2.MP4', headers)
+    #  post_byrequest()
+    #  delete_byrequest()
+    #  put_byrequest()
+    #  post_byurllib2()
+    process = CrawlerProcess()
+    process.crawl(VideoobserverSpider)
+    process.start()
+
+    pass
     
 
