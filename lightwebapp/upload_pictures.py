@@ -12,7 +12,7 @@ from searchengines.searchengine import *
 import threading
 import pymysql
 conn = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = 'abc',
+    host = '127.0.0.1',user = 'root',passwd = '123456',
     port = 3306,db = 'videoright',charset = 'utf8'
     #port必须写int类型
     #charset必须写utf8，不能写utf-8
@@ -27,7 +27,6 @@ def allowed_file(filename):
 app = Flask(__name__)
 # 设置静态文件缓存过期时间
 app.send_file_max_age_default = timedelta(seconds=1)
- 
  
 # @app.route('/upload', methods=['POST', 'GET'])
 @app.route('/upload', methods=['POST', 'GET'])  # 添加路由
@@ -59,8 +58,8 @@ def upload():
         jobid = json.loads(jobidstr)['data']['job']['id']
         t = threading.Thread(target = threading_jobinsert, args=(user_input, headers, jobid))
         t.start()
-
-        return render_template('upload_ok.html',userinput=user_input,contentid = content_id, error = error, val1=time.time())
+        t.join()
+        return render_template('upload_ok.html', userinput=user_input, contentid = content_id, error = gerror['message'], val1=time.time())
  
     return render_template('upload.html')
  
@@ -87,6 +86,7 @@ def threading_jobinsert(rightname, headers, jobid):
         statusstr = queryjobstatus(jobid, headers = headers)
         print statusstr + jobid
         status = json.loads(statusstr)['data']['job']['status']
+        contentid = ''
         time.sleep(1)
         if status == 'finished':
             link = json.loads(statusstr)['data']['job']['result_url']
@@ -98,7 +98,8 @@ def threading_jobinsert(rightname, headers, jobid):
             conn.commit()
             break
         elif status == 'error':
-            return render_template('upload_ok.html',userinput=user_input,contentid = content_id, error = json.loads(statusstr)['data']['job']['error'], val1=time.time())
+            global gerror
+            gerror = json.loads(statusstr)['data']['job']['error']
             break
         elif status == 'cancelled':
             break
