@@ -27,10 +27,10 @@ def put_byrequest():
     print res.text
 if __name__ == '__main__':
      headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
-     res = getdbinfo(headers = headers)
+     payload = {'download_url': 'http://127.0.0.1:5000/static/images/2.MP4'}
+     res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, data = payload)
      print res.text
-     res = requests.post(url + "/dbinfo", headers = headers)
-     print res.text
+     print asyncqueryurl('http://127.0.0.1:5000/static/images/2.MP4', headers)
     #post_byrequest()
     #delete_byrequest()
     #put_byrequest()

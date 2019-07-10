@@ -159,19 +159,19 @@ def asyncquerylocalfile(filepath, headers):
         return res.text
 def queryurl(url, headers):
     payload = {'download_url': url}
-    res = requests.post(BASE_URL + ACTION_QUERY, headers = headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_QUERY, headers = headers, data = payload)
     return res.text
 def asyncqueryurl(url, headers):
     payload = {'download_url': url}
-    res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, data = payload)
     return res.text
 def querycontentid(content_id, headers):
     payload = {'content_id': content_id}
-    res = requests.post(BASE_URL + ACTION_QUERY, headers = headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_QUERY, headers = headers, data = payload)
     return res.text
 def aysncquerycontentid(content_id, headers):
     payload = {'content_id': content_id}
-    res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, files = payload)
+    res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, data = payload)
     return res.text
 """
 使用within mode查询，只对视频有效
