@@ -1,5 +1,5 @@
 # coding:utf-8
-from flask import Flask, render_template, request, redirect, url_for, make_response,jsonify
+from flask import Flask, render_template, request, redirect, url_for, make_response,jsonify,session
 from werkzeug.utils import secure_filename
 import os
 import time
@@ -11,6 +11,7 @@ from videntify.curl2python import *
 from searchengines.searchengine import *
 import threading
 import pymysql
+
 conn = pymysql.connect(
     host = '127.0.0.1',user = 'root',passwd = '123456',
     port = 3306,db = 'videoright',charset = 'utf8'
@@ -27,7 +28,28 @@ def allowed_file(filename):
 app = Flask(__name__)
 # 设置静态文件缓存过期时间
 app.send_file_max_age_default = timedelta(seconds=1)
- 
+app.secret_key = '123456'
+
+@app.route('/index', methods=['POST', 'GET'])
+def home():
+    return render_template('login.html')
+@app.route('/login', methods=['POST','GET'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get("user")
+        password = request.form.get("passwd")
+        print username
+        print password
+        cursor.execute("select *  from user where username = \'" + username + "\' and userpassword = \'" + password + "\'")
+        row = cursor.fetchall()
+        print row
+        if len(row) == 0:
+            return url_for("login")
+        else:
+            session.permanent = True
+            session['username'] = username
+            session['apitoken'] = row[0][4]
+            return url_for("upload")
 # @app.route('/upload', methods=['POST', 'GET'])
 @app.route('/upload', methods=['POST', 'GET'])  # 添加路由
 def upload():
@@ -46,7 +68,8 @@ def upload():
         # upload_path = os.path.join(basepath, 'static/images','test.jpg')  #注意：没有的文件夹一定要先创建，不然会提示没有该路径
         f.save(upload_path)
         
-        headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
+        apitoken = session['apitoken'].encode('raw_unicode_escape')
+        headers = {"Authorization":apitoken}
         # res = insertlocalfile(upload_path, headers)
         # result = json.loads(res.text)
 
