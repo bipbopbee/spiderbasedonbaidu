@@ -11,7 +11,8 @@ from videntify.curl2python import *
 from searchengines.searchengine import *
 import threading
 import pymysql
-
+from scrapy.crawler import CrawlerProcess
+from CopyrightObserver.CopyrightObserver.spiders.VideoObserver import VideoobserverSpider
 conn = pymysql.connect(
     host = '127.0.0.1',user = 'root',passwd = '123456',
     port = 3306,db = 'videoright',charset = 'utf8'
@@ -92,6 +93,10 @@ def search():
         keyword = request.form.get('keyword')
         print keyword
         #start_search(keyword)
+        spider = VideoobserverSpider(session['apitoken'].encode('raw_unicode_escape'))
+        process = CrawlerProcess()
+        process.crawl(spider)
+        process.start()
         t = threading.Thread(target = start_search, args=(keyword,))
         t.start()
         return render_template('search.html')
