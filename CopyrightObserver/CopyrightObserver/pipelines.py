@@ -10,9 +10,12 @@ import threading
 import pymysql
 sys.path.append("../../..")
 from videntify.curl2python import *
-headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
+from videntify.download import *
+import datetime
+#headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
+headers = {}
 conn = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = 'abc',
+    host = '127.0.0.1',user = 'root',passwd = '123456',
     port = 3306,db = 'videoright',charset = 'utf8'
     #port必须写int类型
     #charset必须写utf8，不能写utf-8
@@ -24,7 +27,15 @@ class CopyrightobserverPipeline(object):
     def process_item(self, item, spider):
         line = json.dumps(dict(item)) + '\n'
         self.file.write(line.encode('utf-8'))
+        apitoken = item['apitoken']
+        headers = {"Authorization": apitoken}
         detailurl = item['detailurl']
+        videourl = item['videourl']
+        if videourl[-4:] == "m3u8" or videourl[-4:] == "M3U8":
+            nowtime = str(datetime.datetime.now().microsecond)
+            t = threading.Thread(target=thread_download, args=(detailurl, videourl, nowtime))
+            t.start()
+            return item
         jobidstr = asyncqueryurl(item['videourl'], headers)
         jobid = json.loads(jobidstr)['data']['job']['id']
         t = threading.Thread(target = threading_jobquey, args=(detailurl, headers, jobid))
