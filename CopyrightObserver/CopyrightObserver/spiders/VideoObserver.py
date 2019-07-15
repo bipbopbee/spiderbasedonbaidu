@@ -13,6 +13,18 @@ class VideoobserverSpider(RedisSpider):
     #start_urls = ['http://www.baidu.com/']
     redis_key = "myspider:start_urls"
 
+    #__instance__ = None
+
+    # def __new__():
+    #     if not cls.__instance__:
+    #         cls.__instance__ = object.__new__(cls)
+    #     else:
+    #         return cls.__instance__
+
+    def __init__(self, apitoken):
+        self.apitoken = apitoken
+        return super(VideoobserverSpider, self).__init__()
+
     def parse(self, response):
         data = response.body
         strUrlfilter = r'(?:https|http)://.+?\.(?:mp4|m3u8|mkv|MP4|M3U8|MKV)'
@@ -23,6 +35,7 @@ class VideoobserverSpider(RedisSpider):
             item = CopyrightobserverItem()
             item['detailurl'] = response.url
             item['videourl']  = pattern.findall(data)[0]
+            item['apitoken']  = self.apitoken
             yield item
         else:
             nexturls = response.xpath('//a/@href').extract()
@@ -39,4 +52,5 @@ class VideoobserverSpider(RedisSpider):
             item = CopyrightobserverItem()
             item['detailurl'] = response.url
             item['videourl']  = pattern.findall(data)
+            item['apitoken']  = self.apitoken
             yield item
