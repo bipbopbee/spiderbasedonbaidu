@@ -11,5 +11,6 @@ import scrapy
 class CopyrightobserverItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
+    apitoken = scrapy.Field()
     detailurl = scrapy.Field()
     videourl = scrapy.Field()
