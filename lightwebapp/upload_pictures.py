@@ -92,11 +92,11 @@ def search():
     if request.method == 'POST':
         keyword = request.form.get('keyword')
         print keyword
-        #start_search(keyword)
-        spider = VideoobserverSpider(session['apitoken'].encode('raw_unicode_escape'))
-        process = CrawlerProcess()
-        process.crawl(spider)
-        process.start()
+        # start_search(keyword)
+        # spider = VideoobserverSpider(session['apitoken'].encode('raw_unicode_escape'))
+        # process = CrawlerProcess()
+        # process.crawl(spider)
+        # process.start()
         t = threading.Thread(target = start_search, args=(keyword,))
         t.start()
         return render_template('search.html')
