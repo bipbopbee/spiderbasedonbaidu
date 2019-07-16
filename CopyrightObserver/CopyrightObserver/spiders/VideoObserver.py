@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy_redis.spiders import RedisSpider
-from CopyrightObserver.CopyrightObserver.items import CopyrightobserverItem
+from CopyrightObserver.items import CopyrightobserverItem
 import re
 #解决utf8 code问题
 import sys
