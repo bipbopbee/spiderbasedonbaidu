@@ -9,6 +9,7 @@ import threading
 from curl2python import *
 import json
 import pymysql
+import time
 headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
 conn = pymysql.connect(
     host = '127.0.0.1',user = 'root',passwd = '123456',
@@ -19,13 +20,15 @@ conn = pymysql.connect(
 url = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
 name = "tmp.mp4"
 #ffmpeg -i "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8" -vcodec copy -acodec copy -absf aac_adtstoasc output.mp4
-
-
 def threading_jobquey(detailurl, headers, jobid):
     while True:
-        statusstr = queryjobstatus(jobid, headers = headers)
+        try:
+            statusstr = queryjobstatus(jobid, headers = headers)
+        except requests.exceptions.ConnectionError:
+            print "error"
         status = json.loads(statusstr)['data']['job']['status']
-        if status == 'finished':
+        if status == 'success':
+            print 'success'
             link = json.loads(statusstr)['data']['job']['result_url']
             matchesttr = querypersistedresult(link, headers)
             matches = json.loads(matchesttr)['data']['matches']
@@ -57,13 +60,13 @@ def fingerprint_query(detailurl, desc72file, headers):
 def desc72_generate(filename):
     try:
         command = "desc_tools " +  filename + " " + filename + ".desc72"
-        outtemp =tempfile.SpooledTemporaryFile(bufsize = 10 * 1000)
+        outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
         fileno = outtemp.fileno()
         fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
-        fd.wait()
-        outtemp.seek(0)
-        lines = outtemp.readlines()
-        print lines
+        fd.communicate()
+        # outtemp.seek(0)
+        # lines = outtemp.readlines()
+        # print lines
     except Exception, e:
         print traceback.format_exc()
     finally:
@@ -73,13 +76,13 @@ def desc72_generate(filename):
 def thread_download(detailurl, url, nowtime):
     try:
         command = "ffmpeg -i " + url + " -vcodec copy -acodec copy -absf aac_adtstoasc " + nowtime + ".mp4"
-        outtemp =tempfile.SpooledTemporaryFile(bufsize = 10 * 1000)
+        outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
         fileno = outtemp.fileno()
         fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
-        fd.wait()
-        outtemp.seek(0)
-        lines = outtemp.readlines()
-        print lines
+        fd.communicate()
+        #outtemp.seek(0)
+        #lines = outtemp.readlines()
+        #print lines
     except Exception, e:
         print traceback.format_exc()
     finally:
@@ -89,9 +92,10 @@ def thread_download(detailurl, url, nowtime):
     fingerprint_query(detailurl, nowtime + ".mp4" + ".desc72", headers)
 
 if __name__ == "__main__":
-    nowtime = str(datetime.datetime.now().microsecond)
-    print nowtime
-    detailurl = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
-    t = threading.Thread(target=thread_download, args=(detailurl, url, nowtime))
-    t.start()
+    # nowtime = str(datetime.datetime.now().microsecond)
+    # print nowtime
+    # detailurl = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
+    # t = threading.Thread(target=thread_download, args=(detailurl, url, nowtime))
+    # t.start()
+    fingerprint_query(url, "656000.mp4.desc72", headers)
     pass
