@@ -193,7 +193,7 @@ def asyncquerywithfile(filepath ,headers):
 async insert/query时，服务器后台生成的jobs操作
 """
 def queryjobstatus(jobid, headers):
-    res = requests.get(BASE_URL + ACTION_JOBS + "/" + jobid, headers = headers)
+    res = requests.get(BASE_URL + ACTION_JOBS + "/" + jobid, headers = headers, allow_redirects=False)
     return res.text
 """
 查询已经查询过的结果
