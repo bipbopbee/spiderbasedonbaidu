@@ -1,90 +1,48 @@
-# -*- coding:utf-8 -*-
-
-"""
-Updated at 17:57 at March 19,2019
-@title: 爬取抖音App短视频
-@author: Northxw
-"""
-
-from mitmproxy import ctx
-import json
+#coding=utf8
 import requests
-import time
+import sys
 import os
+import io
+import time
+if __name__ == "__main__":
+    headers={}
+    #headers["accept-encoding"] = "gzip"
+    headers["x-ss-req-ticket"] = "1563955514509"
+    headers["x-tt-token"] = "00d2407d3890c914e3722c00b394ef7e4f4193bff9cf1f2e838ad5d983361fca43d2df49e0160afe0f474fa1df2f74279462"
+    headers["sdk-version"] = "1"
+    headers["x-ss-stub"] = "16F3387E61D25662274247C20FE2084C"
+    headers["user-agent"] = "com.ss.android.ugc.aweme/721 (Linux; U; Android 7.1.2; zh_CN; M6 Note; Build/N2G47H; Cronet/58.0.2991.0)"
+    headers["x-gorgon"] = "0300fe56000092d0946479a32a260617a423aa5fc0add543b7d4"
+    headers["x-khronos"] = "1563955514"
+    headers['content-type'] = "application/x-www-form-urlencoded; charset=UTF-8"
 
-def response(flow):
-    """
-    抓取抖音标题、APP视频链接、作者、抖音ID、发布时间、获赞数、评论和转发数等信息, 并将结果保存为JSON格式.
-    :return: None
-    """
-    # 通过Charles获取的抖音视频信息的URL接口
-    url = 'https://api.amemv.com/'
-    if flow.request.url.startswith(url):
-        # 获取服务器返回的响应
-        text = flow.response.text
-        # 转化为Json格式
-        dyjson = json.loads(text)
-        info = ctx.log.info
 
-        # 获取视频列表
-        aweme_list = dyjson.get('aweme_list')
-        # 遍历列表，获取每个视频的相应数据
-        for i in range(len(aweme_list)):
-            # 视频标题
-            title = aweme_list[i].get('share_info').get('share_title')
-            # 视频链接
-            videourl = aweme_list[i].get('video').get('play_addr').get('url_list')[0]
-            # 保存视频
-            res = requests.get(videourl, stream=True)
-            # 规范文件命名
-            _str = ['\\', '/', ':', '*', '?', '"', '<', '>', '|', '.', '..', '？']
-            for _ in _str:
-                if _ in title:
-                    title.replace(_, '')
-            # 判断文件路径是否存在
-            save_dir = './video/'
-            if not os.path.exists(save_dir):
-                os.mkdir(save_dir)
-            with open('{}/{}.mp4'.format(save_dir, title), 'wb') as f:
-                f.write(res.content)
+    cookies={}
+    cookies["odin_tt"] = "39e75ba6630c35f0122eefa42a187ec07ef0d28830b9e0b75513dbf38dfff9e649d246e4d1ae3c85f37c13eb6195d70ef6674a5a10e0fc1172ba959af9cadf10"
+    cookies["sid_tt"] = "d2407d3890c914e3722c00b394ef7e4f"
+    cookies["sessionid"] = "d2407d3890c914e3722c00b394ef7e4f"
+    cookies["qh[360]"] = "1"
 
-            # 作者名称
-            nickname = aweme_list[i].get('author').get('nickname')
-            # 抖音ID
-            short_id = aweme_list[i].get('author').get('short_id')
-            # 发布时间
-            create_time = aweme_list[i].get('create_time')
-            # 格式化
-            create_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(create_time))
-            # 获赞、评论、转发数
-            digg_count = aweme_list[i].get('statistics').get('digg_count')
-            comment_count = aweme_list[i].get('statistics').get('comment_count')
-            share_count = aweme_list[i].get('statistics').get('share_count')
+    data={
+        "keyword":"蜘蛛侠",
+        "offset":"0",
+        "count":"20",
+        "is_pull_refresh":"0",
+        "search_source":"normal_search",
+        "hot_search":"0",
+        "latitude":"31.93758",
+        "longtiude":"118.744453",
+        "search_id":"",
+        "query_correct_type":"1"
+    }
+    url = "https://aweme-hl.snssdk.com/aweme/v1/general/search/single/?os_api=25&device_type=M6%20Note&ssmix=a&manifest_version_code=721&dpi=480&js_sdk_version=1.19.4.8&uuid=86764803183702&app_name=aweme&version_name=7.2.1&ts="
+    ts = str(int(time.time() * 1000))
+    ticket = str(int(time.time() * 1000))
+    url = url + ts + "&ac=wifi&app_type=normal&channel=meizu&update_version_code=7204&_rticket=" + ticket + "&device_platform=android&iid=79564990350&version_code=721&openudid=1b4b57f9e789e4c8&device_id=60270533422&resolution=1080*1920&device_brand=Meizu&language=zh&os_version=7.1.2&aid=1128&mcc_mnc=46011"
+    print ts
+    print ticket
+    res = requests.post(url, headers = headers, data = data, cookies = cookies, verify=False)
+    str = res.text
+    f = open('a.json', 'w')
+    f.write(str)
 
-            # 显示所有获取信息
-            info("标题:" + title)
-            info("URL：" + videourl)
-            info("作者: " + nickname)
-            info("ID: " + short_id)
-            info("发布时间: " + create_time)
-            info("获赞：" + str(digg_count))
-            info("评论：" + str(comment_count))
-            info("转发：" + str(share_count))
-            info('-'*80)
-
-            # 保存为json文件
-            data = {
-                'title': title,
-                'url': videourl,
-                'nickname': nickname,
-                'douyin_id': short_id,
-                'create_time': create_time,
-                'diggs': digg_count,
-                'commments': comment_count,
-                'shares': share_count
-            }
-
-            # 下载视频
-            with open('./douyin.json', 'a', encoding='utf-8') as f:
-                f.write(json.dumps(data, indent=2, ensure_ascii=False))
-                f.write(', \n')
