@@ -6,12 +6,12 @@ import io
 import time
 if __name__ == "__main__":
     headers={}
-    #headers["accept-encoding"] = "gzip"
+    headers["accept-encoding"] = "gzip"
     headers["x-ss-req-ticket"] = "1563955514509"
     headers["x-tt-token"] = "00d2407d3890c914e3722c00b394ef7e4f4193bff9cf1f2e838ad5d983361fca43d2df49e0160afe0f474fa1df2f74279462"
     headers["sdk-version"] = "1"
     headers["x-ss-stub"] = "16F3387E61D25662274247C20FE2084C"
-    headers["user-agent"] = "com.ss.android.ugc.aweme/721 (Linux; U; Android 7.1.2; zh_CN; M6 Note; Build/N2G47H; Cronet/58.0.2991.0)"
+    headers["user-agent"] = "com.ss.android.ugc.aweme/400 (Linux; U; Android 4.4.2; zh_CN; OPPO R11; Build/NMF26X; Cronet/58.0.2991.0)"
     headers["x-gorgon"] = "0300fe56000092d0946479a32a260617a423aa5fc0add543b7d4"
     headers["x-khronos"] = "1563955514"
     headers['content-type'] = "application/x-www-form-urlencoded; charset=UTF-8"
@@ -24,9 +24,9 @@ if __name__ == "__main__":
     cookies["qh[360]"] = "1"
 
     data={
-        "keyword":"蜘蛛侠",
+        "keyword":"车祸",
         "offset":"0",
-        "count":"20",
+        "count":"10",
         "is_pull_refresh":"0",
         "search_source":"normal_search",
         "hot_search":"0",
