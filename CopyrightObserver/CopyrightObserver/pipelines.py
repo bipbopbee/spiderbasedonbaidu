@@ -56,8 +56,8 @@ def threading_jobquey(detailurl, headers, jobid):
                 contentid = contentid + matches[i]['content']['content_id'] + ":"
             break
             if len(matches) > 0:
-                sql = "insert into privacy (url, privacyname, contentid) values ("
-                sql = sql + detailurl + "，" + "  ," + contentid + ")"
+                sql = "insert into privacy (url, contentid) values (\'"
+                sql = sql + detailurl + "\'," + "  ,\'" + contentid + "\')"
                 cursor.execute(sql)
                 conn.commit()
             break
