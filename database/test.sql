@@ -28,6 +28,15 @@ create table `privacy` (
     `rightname` varchar (150) NOT NULL,
     `contentid` int (11) NOT NULL
 )DEFAULT CHARSET=utf8;
+create table `gongzhonghao` (
+    `id` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `url` varchar (150) NOT NULL,
+    `title` varchar (150) NOT NULL,
+    `publishname` varchar (150) NOT NULL,
+    `publishdate` varchar (150) NOT NULL
+)DEFAULT CHARSET=utf8;
+
 insert into privacy (privacyid, url, rightname, contentid)  values (NULL, 'www.baidu.com','神奇', 22);
 insert into user (userid, username, userpassword, email, apitoken, role)  values (NULL, 'abc','abc', '516854715@qq.com', 'LWtrKgMmLIeAWyyDUlLa', 'basic');
 insert into user (userid, username, userpassword, email, apitoken, role)  values (NULL, 'tom','abc', '123456@qq.com', 'LWtrKgMmLIeAWyyDUlLa', 'basic');
+insert into gongzhonghao (id, url, title, publishname, publishdate)  values (NULL, 'www.baidu.com', '神奇', '知安视娱', '2019-08-01');
