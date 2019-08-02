@@ -24,3 +24,7 @@
  os_version=7.1.2&
  aid=1128&
  mcc_mnc=46011
+
+ https://aweme-hl.snssdk.com/aweme/v1/aweme/stats/?os_api=25&device_type=M6%20Note&ssmix=a&manifest_version_code=720&dpi=480&js_sdk_version=1.19.4.7&uuid=86764803183702&app_name=aweme&version_name=7.2.0&ts=1563528341&ac=wifi&app_type=normal&channel=meizu&update_version_code=7202&_rticket=1563528341533&device_platform=android&iid=79208050553&version_code=720&openudid=1b4b57f9e789e4c8&device_id=60270533422&resolution=1080*1920&device_brand=Meizu&language=zh&os_version=7.1.2&aid=1128&mcc_mnc=46011
+ https://aweme-hl.snssdk.com/aweme/v1/aweme/stats/?os_api=25&device_type=M6%20Note&ssmix=a&manifest_version_code=720&dpi=480&js_sdk_version=1.19.4.7&uuid=86764803183702&app_name=aweme&version_name=7.2.0&ts=1563528375&ac=wifi&app_type=normal&channel=meizu&update_version_code=7202&_rticket=1563528374917&device_platform=android&iid=79208050553&version_code=720&openudid=1b4b57f9e789e4c8&device_id=60270533422&resolution=1080*1920&device_brand=Meizu&language=zh&os_version=7.1.2&aid=1128&mcc_mnc=46011
+https://iu-hl.snssdk.com/passport/mobile/login/?account_sdk_version=362&os_api=25&device_type=M6+Note&ssmix=a&manifest_version_code=720&dpi=480&js_sdk_version=1.19.4.7&uuid=86764803183702&app_name=aweme&version_name=7.2.0&ts=1563528673&ac=wifi&app_type=normal&channel=meizu&update_version_code=7202&_rticket=1563528672698&device_platform=android&iid=79208050553&version_code=720&openudid=1b4b57f9e789e4c8&device_id=60270533422&resolution=1080*1920&device_brand=Meizu&language=zh&os_version=7.1.2&aid=1128&mcc_mnc=46011
