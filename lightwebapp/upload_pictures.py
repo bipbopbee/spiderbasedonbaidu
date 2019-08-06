@@ -36,6 +36,7 @@ def home():
     return render_template('login.html')
 @app.route('/login', methods=['POST','GET'])
 def login():
+    return jsonify({'name':'name','words':'words'})
     if request.method == 'POST':
         username = request.form.get("user")
         password = request.form.get("passwd")
