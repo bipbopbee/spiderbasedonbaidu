@@ -11,6 +11,7 @@ from videntify.curl2python import *
 from searchengines.searchengine import *
 import threading
 import pymysql
+from gevent
 #from scrapy.crawler import CrawlerProcess
 #from CopyrightObserver.CopyrightObserver.spiders.VideoObserver import VideoobserverSpider
 conn = pymysql.connect(
@@ -36,7 +37,6 @@ def home():
     return render_template('login.html')
 @app.route('/login', methods=['POST','GET'])
 def login():
-    return jsonify({'name':'name','words':'words'})
     if request.method == 'POST':
         username = request.form.get("user")
         password = request.form.get("passwd")
