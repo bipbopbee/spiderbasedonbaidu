@@ -11,7 +11,6 @@ from videntify.curl2python import *
 from searchengines.searchengine import *
 import threading
 import pymysql
-from gevent
 #from scrapy.crawler import CrawlerProcess
 #from CopyrightObserver.CopyrightObserver.spiders.VideoObserver import VideoobserverSpider
 conn = pymysql.connect(
