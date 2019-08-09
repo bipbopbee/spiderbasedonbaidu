@@ -50,7 +50,12 @@ def login():
             session.permanent = True
             session['username'] = username
             session['apitoken'] = row[0][4]
-            return url_for("upload")
+            return url_for("main")
+            #return url_for("upload")
+
+@app.route('/main', methods=['POST', 'GET'])
+def main():
+    return render_template('home.html')
 # @app.route('/upload', methods=['POST', 'GET'])
 @app.route('/upload', methods=['POST', 'GET'])  # 添加路由
 def upload():
