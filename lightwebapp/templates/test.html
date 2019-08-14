@@ -7,17 +7,17 @@
 body{font-size:12px;}
 ul,li,h2{margin:0;padding:0;}
 ul{list-style:none;}
-#top{width:900px;height:40px;margin:0 auto;background-color:#CCCC00}
+#top{width:100%;height:40px;margin:0 auto;background-color:#CCCC00}
 #top h2{width:150px;height:40px;background-color:#99CC00;float:left;font-size:14px;text-align:center;line-height:40px;}
 #topTags{width:750px;height:40px;margin:0 auto;background-color:#CCCC00;float:left}
 #topTags ul li{float:left;width:100px;height:25px;margin-right:5px;display:block;text-align:center;cursor:pointer;padding-top:15px;}
-#main{width:900px;height:500px;margin:0 auto;background-color:#F5F7E6;}
-#leftMenu{width:150px;height:500px;background-color:#009900;float:left}
+#main{width:2400px;height:1080px;margin:0 auto;background-color:#F5F7E6;}
+#leftMenu{width:150px;height:1080px;background-color:#009900;float:left}
 #leftMenu ul{margin:10px;}
 #leftMenu ul li{width:130px;height:30px;display:block;background:#99CC00;cursor:pointer;line-height:30px;text-align:center;margin-bottom:5px;}
 #leftMenu ul li a{color:#000000;text-decoration:none;display:block;height:100%;/*将a填满整个li，要不不点击到a无法加载页面*/}
-#content{width:750px;height:500px;float:left}
-.content{width:740px;height:490px;display:none;padding:5px;overflow-y:auto;line-height:30px;}
+#content{width:1080px;height:500px;float:left}
+.content{width:1080px;height:490px;display:none;padding:5px;overflow-y:auto;line-height:30px;}
 .content iframe{width:100%;height:100%}
 #footer{width:900px;height:30px;margin:0 auto;background-color:#ccc;line-height:30px;text-align:center;}
 .content1 {width:740px;height:490px;display:block;padding:5px;overflow-y:auto;line-height:30px;}
@@ -34,7 +34,9 @@ ul{list-style:none;}
             ck[i].onclick = function () {
                 $("welcome").style.display = "none"//欢迎内容隐藏
                 //循环取得当前索引
-                for (j = 0; j < 8; j++) {
+                for (j = 0; j < 14; j++) {
+                    if (j!=0 && j!=3 && j!=11)
+                        continue;
                     if (this == ck[j]) {
                         if ($("p" + j) == null) {
                             openNew(j, this.innerHTML); //设置标签显示文字
@@ -91,7 +93,7 @@ ul{list-style:none;}
         }
         //清除内容
         function clearContent() {
-            for (i = 0; i < 7; i++) {
+            for (i = 0; i < 14; i++) {
                 $("c" + i).style.display = "none";
             }
         }
@@ -100,7 +102,7 @@ ul{list-style:none;}
 </head>
 <body>
 <div id="top">
-<h2>管理菜单</h2>
+<h2>工具菜单</h2>
 <div id="topTags">
 <ul>
 </ul>
@@ -109,13 +111,22 @@ ul{list-style:none;}
 <div id="main"> 
 <div id="leftMenu">
 <ul>
-<li><a href="search_bak.html" target="content1">搜索页面</a></li>
-<li><a href="相册管理.html" target="content2">相册管理</a></li>
-<li><a href="日志管理.html" target="content3">日志管理</a></li>
-<li><a href="留言管理.html" target="content4">留言管理</a></li>
-<li><a href="风格管理.html" target="content5">风格管理</a></li>
-<li><a href="系统管理.html" target="content6">系统管理</a></li>
-<li><a href="帮助信息.html" target="content7">帮助信息</a></li>
+<!-- <li><a href="#" target="dddd">Discovery</a></li> -->
+<li><a href="search_bak.html" target="content1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Searches</a></li>
+<li><a href="#" target="content2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Domains</a></li>
+<li><a href="#" target="content3">Analyst</a></li>
+<li><a href="validation.html" target="content4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Validation</a></li>
+<li><a href="#" target="content5">Asserts</a></li>
+<li><a href="#" target="content6">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Film</a></li>
+<li><a href="#" target="content7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Series</a></li>
+<li><a href="#" target="content8">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Games</a></li>
+<li><a href="#" target="content9">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Books</a></li>
+<li><a href="#" target="content10">Configuration</a></li>
+<li><a href="#" target="content11">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tenants</a></li>
+<li><a href="profiles.html" target="content12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Profiles</a></li>
+<li><a href="#" target="content13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Blocklist</a></li>
+<li><a href="#" target="content14">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rediit</a></li>
+<li><a href="#" target="content15">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Profile Languages</a></li>
 </ul>
 </div>
 <div id="content">
@@ -133,8 +144,15 @@ ul{list-style:none;}
 <div id="c4" class="content"><iframe name="content5" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
 <div id="c5" class="content"><iframe name="content6" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
 <div id="c6" class="content"><iframe name="content7" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
+<div id="c7" class="content"><iframe name="content8" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
+<div id="c8" class="content"><iframe name="content9" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
+<div id="c9" class="content"><iframe name="content10" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
+<div id="c10" class="content"><iframe name="content11" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
+<div id="c11" class="content"><iframe name="content12" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
+<div id="c12" class="content"><iframe name="content13" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
+<div id="c13" class="content"><iframe name="content14" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
+<div id="c14" class="content"><iframe name="content15" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe></div>
 </div>
 </div>
-<div id="footer">copyright for lalasxc </div>
 </body>
 </html>
