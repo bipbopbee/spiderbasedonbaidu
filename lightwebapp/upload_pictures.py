@@ -55,7 +55,7 @@ def login():
 
 @app.route('/main', methods=['POST', 'GET'])
 def main():
-    return render_template('home.html')
+    return render_template('upload.html')
 # @app.route('/upload', methods=['POST', 'GET'])
 @app.route('/upload', methods=['POST', 'GET'])  # 添加路由
 def upload():
@@ -76,6 +76,7 @@ def upload():
         
         apitoken = session['apitoken'].encode('raw_unicode_escape')
         headers = {"Authorization":apitoken}
+        print headers
         # res = insertlocalfile(upload_path, headers)
         # result = json.loads(res.text)
 
