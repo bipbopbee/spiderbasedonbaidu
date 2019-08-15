@@ -213,7 +213,7 @@ def queryjobstatus(jobid, headers):
 """
 ##link = /5?access_token=6CChvv3IHhfi6Q8IL1Y6QRNvytayHbF6
 def querypersistedresult(link, headers):
-    res = requests.post(BASE_URL + ACTION_QUERY_PERSISTED_RESULT + link, headers = headers)
+    res = requests.get(link, headers = headers)
     return res.text
 def querywithinpersistedresult(link ,headers):
     res = requests.post(BASE_URL + ACTION_QUERY_WITHIN_PERSISTED_RESULT + link, headers = headers)
