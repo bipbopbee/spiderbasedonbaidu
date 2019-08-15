@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>盗版监测平台上传演示</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    $('#mytable').on('click()', 'tr',function(){
+        alert('dkjkk')
+    });
+//别忘了导入该用的js文件
+function update(){
+    $.ajax({
+        url: '/update', //请求的url
+        type: 'post', //请求的方式
+        timeout:2000,
+        async:true,
+        //data: $('#keyword').serialize(), //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
+        error:function (data) {
+           // alert('请求失败');
+        },
+        success:function (data) {
+            //alert(data)
+            var obj = $.parseJSON(data)
+            //alert(obj.data)
+            //alert(obj.data.length)
+            var str1 = "";
+            //清空table中的html
+            $("#test").html("");
+            for(var i = 0;i<obj.data.length;i++){
+                //alert(obj.data[i][2])
+                str1 = "<tr>" + 
+                    "<td>"+obj.data[i][0] + "</td>" +
+                    "<td>"+obj.data[i][1] + "</td>" +
+                    "<td>"+obj.data[i][2] + "</td>" +
+                    "</tr>";
+                $("#test").append(str1);
+            }
+        }
+    });
+}
+function subForm() {
+    $.ajax({
+        url: '/search', //请求的url
+        type: 'post', //请求的方式
+        timeout:2000,
+        async:true,
+        dataType:'json',
+        data: {'keyword':$("#keyword").val()}, //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
+        error:function (data) {
+            alert('请求失败');
+        },
+        success:function (data) {
+            //alert(data)
+        }
+    });
+    setInterval("update();",2000);
+}
+</script>
+<body>
+    <h3># Video stills</h3>
+    <div class="top" style="display:grid;grid-template-columns: 100px 100px 100px;grid-template-rows: 50px 50px;">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+    </div>
+    <div class="center">
+        <h3>Tags</h3>
+        <br>
+        <input type="text" class="txt_input" name="searchtag"  value="" style="margin-top:10px;" id="SearchTag"/>
+    </div>
+    <div class="bottom">
+        <h3>Hosting Site Url History Detail</h3>
+        <br>
+        <tr><td>id</td><td>{#id}</td></tr><br>
+        <tr><td>created</td><td>{#created time}</td></tr><br>
+        <tr><td>modified</td><td>{#modified time}</td></tr><br>
+        <tr><td>upload_user</td><td>{#upload_user}</td></tr><br>
+        <tr><td>raw_asset</td><td>{#raw_asset}</td></tr><br>
+        <tr><td>displayed_file_size</td><td>{#displayer_file_name}</td></tr><br>
+        <tr><td>displayed_file_type</td><td>{#displayed_file_type}</td></tr><br>
+        <tr><td>displayed_duration</td><td>{#displayed_duration}</td></tr><br>
+        <tr><td>viewer_count</td><td>{#viewer_count}</td></tr><br>
+        <tr><td>video_source_url</td><td>{#video_source_url}</td></tr><br>
+        <tr><td>video_duration</td><td>{#video_duration}</td></tr><br>
+        <tr><td>html_title</td><td>{#html_title}</td></tr><br>
+        <tr><td>status</td><td>{#status}</td></tr><br>
+        <tr><td>videntifier_match</td><td>{#videntifier_match}</td></tr><br>
+        <tr><td>crawl</td><td>{#crawl}</td></tr><br>
+        <tr><td>crawl_job</td><td>{#crawl_job}</td></tr><br>
+        <tr><td>hosting_site_url</td><td>{#hosting_site_url}</td></tr><br>
+    </div>
+    <div class = "footer">
+            <table id="mytable" border="2">
+                    <thead>
+                    <th>ID</th>
+                    <th>Found</th>
+                    <th>Hosting url</th>
+                    <th>Status</th>
+                    <th>Video source url</th>
+                    <th>viewers</th>
+                    <th>Updated</th>
+                    <tr>
+                        <td>1883889</td>
+                        <td>201904-23 22:12:30</td>
+                        <td>http://www.XXXXXX.XXXXXX</td>
+                        <td>Success</td>
+                        <td>http://www.XXXX.XXXXX.mp4(m3u8)</td>
+                        <td>---</td>
+                        <td>---</td>
+                    </tr>
+                    </thead>
+                </table>
+    </div>
+    <div class="last">
+        <h3>URLs linking to this hosting site</h3>
+        <table id="mytable" border="2">
+                <thead>
+                <th>Found</th>
+                <th>Raw Asset</th>
+                <th>Linking Url</th>
+                <th>Season</th>
+                <th>Episode</th>
+                <tr>
+                    <td>2018-03-14 22:21:22</td>
+                    <td>Throne</td>
+                    <td>http://www.XXXXXX.XXXXXX</td>
+                    <td>---</td>
+                    <td>---</td>
+                </tr>
+                </thead>
+            </table>
+    </div>
+</body>
+</html>
