@@ -44,6 +44,7 @@ def resolvepagedata(data):
     strRetnexturl = ''
     objSoup = BeautifulSoup(data, 'lxml')
     tmpnexturl = objSoup.find(name='a', text='下一页>')
+    print tmpnexturl
     if tmpnexturl:
         strRetnexturl = tmpnexturl.get('href')
     for link in objSoup.find_all(name='a', attrs={'href':re.compile(r'^http:')}):
@@ -95,7 +96,7 @@ def main(argv):
             print getvideoadress(website)
             #lpush('myspider:start_urls', website)
         data = geturlpage(url[:-3] + nexturl)
-        if nexturl is None:
+        if nexturl == "":
             break
         #n = n + 1
 if __name__ == '__main__':
