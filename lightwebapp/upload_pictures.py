@@ -14,11 +14,13 @@ import pymysql
 #from scrapy.crawler import CrawlerProcess
 #from CopyrightObserver.CopyrightObserver.spiders.VideoObserver import VideoobserverSpider
 conn = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = '123456',
+    host = '127.0.0.1',user = 'root',passwd = 'abc',
     port = 3306,db = 'videoright',charset = 'utf8'
     #port必须写int类型
     #charset必须写utf8，不能写utf-8
 )
+content_id = ""
+gerror = {"message":"success"}
 cursor = conn.cursor()
 #设置允许的文件格式
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'PNG', 'bmp', 'mp4', 'desc72'])
@@ -66,7 +68,7 @@ def upload():
             return jsonify({"error": 1001, "msg": "请检查上传的图片类型，仅限于png、PNG、jpg、JPG、bmp"})
  
         user_input = request.form.get("name")
-        content_id = ''
+        #content_id = ''
         error = ''
         basepath = os.path.dirname(__file__)  # 当前文件所在路径
  
@@ -84,11 +86,14 @@ def upload():
         #     error = result['error']['message']
         # else:
         #    content_id = result['data']['content']['contend_id']
+        global content_id
+        global gerror
         jobidstr = asyncinsertlocalfile(upload_path, headers)
         jobid = json.loads(jobidstr)['data']['job']['id']
         t = threading.Thread(target = threading_jobinsert, args=(user_input, headers, jobid))
         t.start()
         t.join()
+        print "upload" + content_id
         return render_template('upload_ok.html', userinput=user_input, contentid = content_id, error = gerror['message'], val1=time.time())
  
     return render_template('upload.html')
@@ -116,18 +121,23 @@ def update():
     t['data'] = collections
     return json.dumps(t,ensure_ascii=False)
 def threading_jobinsert(rightname, headers, jobid):
+    global content_id
     while True:
         statusstr = queryjobstatus(jobid, headers = headers)
         print statusstr + jobid
         status = json.loads(statusstr)['data']['job']['status']
         contentid = ''
         time.sleep(1)
-        if status == 'finished':
+        if status == 'success':
             link = json.loads(statusstr)['data']['job']['result_url']
             datastr = querypersistedresult(link, headers)
+            print datastr
             contentid = json.loads(datastr)['data']['content']['content_id']
-            sql = "insert into ritht_tmp (rightname, url, email, contentid) values ("
-            sql = sql + rightname + "，" + "NULL," + "516854715@qq.com," + contentid + ")"
+            content_id = contentid
+            print "thread" + content_id
+            sql = "insert into right_tmp (rightid, rightname, url, email, contentid) values (NULL, \'"
+            sql = sql + rightname + "\'," + "'',\'" + "516854715@qq.com\'," + contentid + ")"
+            print sql
             cursor.execute(sql)
             conn.commit()
             break
