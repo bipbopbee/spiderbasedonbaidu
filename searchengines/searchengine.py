@@ -72,7 +72,7 @@ def start_search(keyword):
             #print getvideoadress(website)
             lpush('myspider:start_urls', website)
         data = geturlpage(url[:-3] + nexturl)
-        if nexturl is None:
+        if nexturl == "":
             break
     return
         #n = n + 1

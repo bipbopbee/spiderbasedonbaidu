@@ -59,33 +59,33 @@ function subForm() {
 }
 </script>
 <body>
-    <h3># 总计搜索多少个资产</h2>
+    <h3># 总计搜索多少个影片</h2>
         <input type="text" class="txt_input" name="ID"  value="" style="margin-top:10px;" id="ID" placeholder="ID"/>
-        <input type="text" class="txt_input" name="keyword"  value="" style="margin-top:10px;" id="keyword" placeholder="Name contains"/>
+        <input type="text" class="txt_input" name="keyword"  value="" style="margin-top:10px;" id="keyword" placeholder="电影名"/>
         <input type="text" class="txt_input" name="imdbid"  value="" style="margin-top:10px;" id="imdbid" placeholder="Imdb id"/>
-        <input type="text" class="txt_input" name="Year"  value="" style="margin-top:10px;" id="Year" placeholder="Year"/>
-        <button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">Filter</button>
+        <input type="text" class="txt_input" name="Year"  value="" style="margin-top:10px;" id="Year" placeholder="年代"/>
+        <button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">过滤</button>
     <table id="mytable" border="2">
         <thead>
         <th>ID</th>
-        <th>Name</th>
+        <th>影片名</th>
         <th>Imdb Id</th>
-        <th>Type</th>
-        <th>Year</th>
-        <th>Keywords</th>
-        <th>Searches</th>
-        <th>Last search</th>
+        <th>类型</th>
+        <th>年代</th>
+        <th>关键词</th>
+        <th>搜索次数</th>
+        <th>最近一次搜索时间</th>
         <th></th>
         <tr>
             <td>1</td>
             <td>throne</td>
             <td>123</td>
-            <td>file</td>
+            <td>电视剧</td>
             <td>2017</td>
-            <td><a href="language_filter.html">game of thrones</a>game of thrones</td>
+            <td><a href="language_filter.html">权力的游戏</a></td>
             <td>12000</td>
             <td>2019-8-9 16:32:30</td>
-            <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick="subForm()"><a href="lanuch_new_search.html">Lanuch new search</a></button></td>
+            <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick=""><a href="lanuch_new_search.html">重新搜索</a></button></td>
         </tr>
         </thead>
         <tbody id="test">

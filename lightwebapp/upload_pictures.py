@@ -14,7 +14,7 @@ import pymysql
 #from scrapy.crawler import CrawlerProcess
 #from CopyrightObserver.CopyrightObserver.spiders.VideoObserver import VideoobserverSpider
 conn = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = 'abc',
+    host = '127.0.0.1',user = 'root',passwd = '123456',
     port = 3306,db = 'videoright',charset = 'utf8'
     #port必须写int类型
     #charset必须写utf8，不能写utf-8
@@ -55,6 +55,9 @@ def login():
             return url_for("main")
             #return url_for("upload")
 
+@app.route('/ui', methods=['POST', 'GET'])
+def ui():
+    return render_template('test.html')
 @app.route('/main', methods=['POST', 'GET'])
 def main():
     return render_template('upload.html')

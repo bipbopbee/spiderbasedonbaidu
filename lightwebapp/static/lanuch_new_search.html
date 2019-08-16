@@ -59,34 +59,34 @@ function subForm() {
 }
 </script>
 <body>
-    <h3># 总计多少个搜索&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">Add Search</button></h2>
-        <input type="text" class="txt_input" name="ID"  value="" style="margin-top:10px;" id="ID"/>
-        <input type="text" class="txt_input" name="Asset contains"  value="" style="margin-top:10px;" id="AssetContains"/>
+    <h3># 总计多少个搜索&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">添加新的搜索</button></h2>
+        <input type="text" class="txt_input" name="ID"  value="" style="margin-top:10px;" id="ID" placeholder="ID"/>
+        <input type="text" class="txt_input" name="Asset contains"  value="" style="margin-top:10px;" id="AssetContains" placeholder="AssetContains"/>
         <button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">过滤</button>
     <table id="mytable" border="2">
         <thead>
         <th>All</th>
         <th>ID</th>
-        <th>Started Time</th>
-        <th>Asset</th>
-        <th>Status</th>
-        <th>Search jobs</th>
-        <th>Linking urls</th>
-        <th>Hosting urls</th>
-        <th>Successful Captures</th>
-        <th>Cyberlocker urls</th>
-        <th>View</th>
+        <th>开始时间</th>
+        <th>电影名字</th>
+        <th>状态</th>
+        <th>搜索jobs</th>
+        <th>播放URL个数</th>
+        <th>网页URL个数</th>
+        <th>成功捕获个数</th>
+        <th>混合 urls</th>
+        <th>视图</th>
         <tr>
             <td></td>
             <td>161061</td>
             <td>2018-08-13 9:28:13</td>
-            <td>Throne</td>
-            <td>searching</td>
+            <td>权利的游戏</td>
+            <td>正在搜索</td>
             <td>131</td>
             <td>0</td>
             <td>0</td>
             <td>0</td>
-            <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick="subForm()">View</button></td>
+            <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick="subForm()">查看</button></td>
         </tr>
         </thead>
         <tbody id="test">
