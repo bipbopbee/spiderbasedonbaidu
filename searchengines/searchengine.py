@@ -44,9 +44,13 @@ def resolvepagedata(data):
     strRetnexturl = ''
     objSoup = BeautifulSoup(data, 'lxml')
     tmpnexturl = objSoup.find(name='a', text='下一页>')
-    print tmpnexturl
+    #print tmpnexturl
+    pattern = re.compile('\"(.*?rsv_page=1)\"')
+    tmpnexturl = pattern.findall(data)[0].split("href=")
+    tmpnexturl = tmpnexturl[len(tmpnexturl) - 1]
+    print tmpnexturl[1:]
     if tmpnexturl:
-        strRetnexturl = tmpnexturl.get('href')
+        strRetnexturl = tmpnexturl[1:]
     for link in objSoup.find_all(name='a', attrs={'href':re.compile(r'^http:')}):
         arrList.append(link.get('href'))
     return (arrList, strRetnexturl)
