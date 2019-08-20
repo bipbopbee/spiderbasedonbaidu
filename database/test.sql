@@ -17,11 +17,12 @@ create table `right`(
 ) DEFAULT CHARSET=utf8;
 create table `right_tmp`  (
     `rightid` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `createtime` varchar (100) NOT NULL,
     `rightname` varchar (150) NOT NULL,
     `url` varchar (150) NOT NULL,
     `email` varchar (150) NOT NULL,
     `contentid` int (11) NOT NULL
-) DEFAULT CHARSET=utf8;;
+) DEFAULT CHARSET=utf8;
 create table `privacy` (
     `privacyid` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `url` varchar (150) NOT NULL,
@@ -35,7 +36,22 @@ create table `gongzhonghao` (
     `publishname` varchar (150) NOT NULL,
     `publishdate` varchar (150) NOT NULL
 )DEFAULT CHARSET=utf8;
-
+create table `searches` (
+    `id` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `name` varchar (150) NOT NULL,
+    `type` varchar (150) NOT NULL,
+    `year` varchar (150) NOT NULL,
+    `keyword` varchar (150) NOT NULL,
+    `searchnums` varchar (150) NOT NULL,
+    `lastsearchtime` varchar (150) NOT NULL
+)DEFAULT CHARSET=utf8;
+<th>ID</th>
+        <th>影片名</th>
+        <th>类型</th>
+        <th>年代</th>
+        <th>关键词</th>
+        <th>搜索次数</th>
+        <th>最近一次搜索时间</th>
 insert into privacy (privacyid, url, rightname, contentid)  values (NULL, 'https://www.haokongbu.com/play/755951.html','急速追杀', 240303);
 insert into user (userid, username, userpassword, email, apitoken, role)  values (NULL, 'abc','abc', '516854715@qq.com', 'LWtrKgMmLIeAWyyDUlLa', 'basic');
 insert into user (userid, username, userpassword, email, apitoken, role)  values (NULL, 'tom','abc', '123456@qq.com', 'LWtrKgMmLIeAWyyDUlLa', 'basic');
