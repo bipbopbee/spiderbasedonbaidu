@@ -33,6 +33,16 @@ app = Flask(__name__)
 app.send_file_max_age_default = timedelta(seconds=1)
 app.secret_key = '123456'
 
+#注册blue_print
+from profile.views import profile_home as profile_blueprint
+app.register_blueprint(profile_blueprint, url_prefix="/profile")
+
+from searches.views import searches_home as searches_blueprint
+app.register_blueprint(searches_blueprint, url_prefix="/searches")
+
+from validation.views import validation_home as validation_blueprint
+app.register_blueprint(validation_blueprint, url_prefix="/validation")
+
 @app.route('/index', methods=['POST', 'GET'])
 def home():
     return render_template('login.html')
@@ -52,7 +62,7 @@ def login():
             session.permanent = True
             session['username'] = username
             session['apitoken'] = row[0][4]
-            return url_for("main")
+            return url_for("ui")
             #return url_for("upload")
 
 @app.route('/ui', methods=['POST', 'GET'])
