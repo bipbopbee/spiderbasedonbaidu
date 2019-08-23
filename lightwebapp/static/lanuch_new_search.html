@@ -5,58 +5,52 @@
     <title>盗版监测平台上传演示</title>
 </head>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-<script>
-    $('#mytable').on('click()', 'tr',function(){
-        alert('dkjkk')
-    });
-//别忘了导入该用的js文件
-function update(){
-    $.ajax({
-        url: '/update', //请求的url
-        type: 'post', //请求的方式
-        timeout:2000,
-        async:true,
-        //data: $('#keyword').serialize(), //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
-        error:function (data) {
-           // alert('请求失败');
-        },
-        success:function (data) {
-            //alert(data)
-            var obj = $.parseJSON(data)
-            //alert(obj.data)
-            //alert(obj.data.length)
-            var str1 = "";
-            //清空table中的html
-            $("#test").html("");
-            for(var i = 0;i<obj.data.length;i++){
-                //alert(obj.data[i][2])
-                str1 = "<tr>" + 
-                    "<td>"+obj.data[i][0] + "</td>" +
-                    "<td>"+obj.data[i][1] + "</td>" +
-                    "<td>"+obj.data[i][2] + "</td>" +
-                    "</tr>";
-                $("#test").append(str1);
+<script charset="utf-8">
+String.prototype.getValue= function(parm) {
+		var reg = new RegExp("(^|&)"+ parm +"=([^&]*)(&|$)");
+		var r = this.substr(this.indexOf("\?")+1).match(reg);
+		if (r!=null) return unescape(r[2]); return null;
+	}
+    var url = window.location.href
+    var index = url.indexOf('keyword=')
+    var urlcoded = url.substring(index + 8)
+
+    if(url.getValue("keyword") != null)
+    {
+        $("#test").html("");
+        var parm
+      
+        keyword = decodeURI(urlcoded)
+        $.ajax({
+            url:'/searches/searchbykeyword',
+            type:'post',
+            dataType:'json',
+            data:{"keyword":keyword},
+            timeout:2000,
+            async:true,
+            error:function(data){
+                alert('fail')
+            },
+            success:function(data){
+                collection = data['data']
+                // alert(collection.length)
+                $('#num').append(collection.length)
+                $("#test").html("");
+
+                    //alert(obj.data[i][2])
+                for(var i = 0;i<collection.length;i++){
+                    str1 = "<tr>" + 
+                        "<td>" + collection[i][0] + "</td>" +
+                        "<td>" + collection[i][4] + "</td>" +
+                        "<td>" + collection[i][2] + "</td>" +
+                        "<td>" + "正在搜索" + "</td>" +
+                        "<td>" + collection[i][3] + "</td>" +
+                        "</tr>";
+                    $("#test").append(str1);
+                }
             }
-        }
-    });
-}
-function subForm() {
-    $.ajax({
-        url: '/search', //请求的url
-        type: 'post', //请求的方式
-        timeout:2000,
-        async:true,
-        dataType:'json',
-        data: {'keyword':$("#keyword").val()}, //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
-        error:function (data) {
-            alert('请求失败');
-        },
-        success:function (data) {
-            //alert(data)
-        }
-    });
-    setInterval("update();",2000);
-}
+        });
+    }
 </script>
 <body>
     <h3># 总计多少个搜索&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">添加新的搜索</button></h2>
@@ -65,7 +59,6 @@ function subForm() {
         <button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">过滤</button>
     <table id="mytable" border="2">
         <thead>
-        <th>All</th>
         <th>ID</th>
         <th>开始时间</th>
         <th>电影名字</th>
@@ -76,18 +69,6 @@ function subForm() {
         <th>成功捕获个数</th>
         <th>混合 urls</th>
         <th>视图</th>
-        <tr>
-            <td></td>
-            <td>161061</td>
-            <td>2018-08-13 9:28:13</td>
-            <td>权利的游戏</td>
-            <td>正在搜索</td>
-            <td>131</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick="subForm()">查看</button></td>
-        </tr>
         </thead>
         <tbody id="test">
         
