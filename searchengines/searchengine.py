@@ -3,6 +3,7 @@ import urllib
 import urllib2
 import re
 import time
+from datetime import datetime
 #from SpiderLogger import logger
 #from csimulate import getLineFileFunc
 #解决utf8 code问题
@@ -15,6 +16,15 @@ from bs4 import BeautifulSoup
 import socket
 socket.setdefaulttimeout(10.0)
 from opredis import lpush
+
+import pymysql
+conn = pymysql.connect(
+    host = '127.0.0.1',user = 'root',passwd = '123456',
+    port = 3306,db = 'videoright',charset = 'utf8'
+    #port必须写int类型
+    #charset必须写utf8，不能写utf-8
+)
+cursor = conn.cursor()
 
 def getsearchpagebykeyword(url, keyword):
     strWd = {'wd':keyword}
@@ -46,6 +56,9 @@ def resolvepagedata(data):
     tmpnexturl = objSoup.find(name='a', text='下一页>')
     #print tmpnexturl
     pattern = re.compile('\"(.*?rsv_page=1)\"')
+    if (len(pattern.findall(data)) == 0):
+        strRetnexturl = ""
+        return (arrList, strRetnexturl)
     tmpnexturl = pattern.findall(data)[0].split("href=")
     tmpnexturl = tmpnexturl[len(tmpnexturl) - 1]
     print tmpnexturl[1:]
@@ -66,6 +79,27 @@ def getvideoadress(url):
     return pattern.findall(strData)
 
 def start_search(keyword):
+    num = 0
+    cursor.execute("select * from searchengine where keyword = \'" + keyword + "\'")
+    collection = cursor.fetchall()
+
+    dt = datetime.now()
+    timestr = dt.strftime( '%Y-%m-%d %H:%M:%S' )
+    print timestr
+
+    if len(collection) == 0:
+        num = 0
+        sql = "insert into searchengine (id, name, keyword, searchnums, searchtime)  values (NULL, '百度', \'" + keyword +"\','0\',\'" + timestr + "\');"
+        cursor.execute(sql)
+        conn.commit()
+    else:
+        sql = "update searchengine set searchtime=\'" + timestr + "\' where keyword=\'" + keyword + "\';"
+        print sql
+        cursor.execute(sql)
+        conn.commit()
+        num = collection[0][3]
+        print num
+
     url = "http://www.baidu.com/s?"
     #searchcount = 50
     #n = 0
@@ -74,6 +108,11 @@ def start_search(keyword):
         websiteslist, nexturl = resolvepagedata(data)
         for website in websiteslist:
             #print getvideoadress(website)
+            num = int(num) + 1
+            sql = "update searchengine set searchnums=\'" + str(num) + "\' where keyword=\'" + keyword + "\';"
+            print sql
+            cursor.execute(sql)
+            conn.commit()
             lpush('myspider:start_urls', website)
         data = geturlpage(url[:-3] + nexturl)
         if nexturl == "":
@@ -94,12 +133,33 @@ def main(argv):
     #searchcount = 50
     #n = 0
     data = getsearchpagebykeyword(url, keyword)
+
+    keyword = u'急速追杀'
+    num = 0
+    cursor.execute("select * from searchengine where keyword = \'" + keyword + "\'")
+    collection = cursor.fetchall()
+    
+    if len(collection) == 0:
+        num = 0
+        sql = "insert into searchengine (id, name, keyword, searchnums)  values (NULL, '百度', \'" + keyword +"\','0');"
+        cursor.execute(sql)
+        conn.commit()
+    else:
+        num = collection[0][3]
+        print num
+    
     while True:
         websiteslist, nexturl = resolvepagedata(data)
         for website in websiteslist:
             print getvideoadress(website)
+            num = int(num) + 1
+            sql = "update searchengine set searchnums=\'" + str(num) + "\' where keyword=\'" + keyword + "\';"
+            print sql
+            cursor.execute(sql)
+            conn.commit()
             #lpush('myspider:start_urls', website)
         data = geturlpage(url[:-3] + nexturl)
+        print url[:-3] + nexturl
         if nexturl == "":
             break
         #n = n + 1
