@@ -6,60 +6,57 @@
 </head>
 <script src="js/jquery-3.1.1.min.js"></script>
 <script>
-    $('#mytable').on('click()', 'tr',function(){
-        alert('dkjkk')
-    });
-//别忘了导入该用的js文件
-function update(){
     $.ajax({
-        url: '/update', //请求的url
-        type: 'post', //请求的方式
+        url:'/searches/getall',
+        type:'post',
         timeout:2000,
         async:true,
-        //data: $('#keyword').serialize(), //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
-        error:function (data) {
-           // alert('请求失败');
+        error:function(data){
+            alert('请求失败')
         },
-        success:function (data) {
-            //alert(data)
-            var obj = $.parseJSON(data)
-            //alert(obj.data)
-            //alert(obj.data.length)
-            var str1 = "";
-            //清空table中的html
+        success:function(data){
+            obj = jQuery.parseJSON(data)
+            collection = obj['data']
+            $('#num').append(collection.length)
             $("#test").html("");
-            for(var i = 0;i<obj.data.length;i++){
+            for(var i = 0;i<collection.length;i++){
                 //alert(obj.data[i][2])
                 str1 = "<tr>" + 
-                    "<td>"+obj.data[i][0] + "</td>" +
-                    "<td>"+obj.data[i][1] + "</td>" +
-                    "<td>"+obj.data[i][2] + "</td>" +
+                    "<td>" + collection[i][0] + "</td>" +
+                    "<td>" + collection[i][1] + "</td>" +
+                    "<td>" + collection[i][2] + "</td>" +
+                    "<td>" + collection[i][3] + "</td>" +
+                    "<td><a href=\"language_filter.html?id=" + collection[i][0] + "\">" + collection[i][4] + "</a></td>" +
+                   // "<td><input type=\"button\" value=\"" + collection[i][4] + "\" id = \"tdkeyword\" onclick=\"javascript:addkeyword(this);\"></td>" +
+                    "<td>" + collection[i][5] + "</td>" +
+                    "<td>" + collection[i][6] + "</td>" +
+                    "<td><button type=\"button\" title=\"View\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\"><a href=\"lanuch_new_search.html?keyword=" + collection[i][4] + "\">重新搜索</a></button></td>" +
                     "</tr>";
                 $("#test").append(str1);
             }
         }
     });
-}
-function subForm() {
-    $.ajax({
-        url: '/search', //请求的url
-        type: 'post', //请求的方式
-        timeout:2000,
-        async:true,
-        dataType:'json',
-        data: {'keyword':$("#keyword").val()}, //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
-        error:function (data) {
-            alert('请求失败');
-        },
-        success:function (data) {
-            //alert(data)
-        }
-    });
-    setInterval("update();",2000);
-}
+    function addkeyword(obj){
+         alert(obj.parentNode.parentNode.rowIndex)
+         $.post('/searches/getbyid', {id:1})
+
+        //  $.ajax({
+        //     url:'/searches/getbyid',
+        //     type:'post',
+        //     timeout:2000,
+        //     async:true,
+        //     error:function(data){
+        //         alert('fail')
+        //     },
+        //     success:function(data){
+        //         alert('success')
+        //     }
+        //  });
+    };
+
 </script>
 <body>
-    <h3># 总计搜索多少个影片</h2>
+    <h3><a id="num"></a> 个搜索影片</h3>
         <input type="text" class="txt_input" name="ID"  value="" style="margin-top:10px;" id="ID" placeholder="ID"/>
         <input type="text" class="txt_input" name="keyword"  value="" style="margin-top:10px;" id="keyword" placeholder="电影名"/>
         <input type="text" class="txt_input" name="imdbid"  value="" style="margin-top:10px;" id="imdbid" placeholder="Imdb id"/>
@@ -69,24 +66,12 @@ function subForm() {
         <thead>
         <th>ID</th>
         <th>影片名</th>
-        <th>Imdb Id</th>
         <th>类型</th>
         <th>年代</th>
         <th>关键词</th>
         <th>搜索次数</th>
         <th>最近一次搜索时间</th>
         <th></th>
-        <tr>
-            <td>1</td>
-            <td>throne</td>
-            <td>123</td>
-            <td>电视剧</td>
-            <td>2017</td>
-            <td><a href="language_filter.html">权力的游戏</a></td>
-            <td>12000</td>
-            <td>2019-8-9 16:32:30</td>
-            <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick=""><a href="lanuch_new_search.html">重新搜索</a></button></td>
-        </tr>
         </thead>
         <tbody id="test">
         
