@@ -6,57 +6,46 @@
 </head>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
-    $('#mytable').on('click()', 'tr',function(){
-        alert('dkjkk')
-    });
-//别忘了导入该用的js文件
-function update(){
-    $.ajax({
-        url: '/update', //请求的url
-        type: 'post', //请求的方式
-        timeout:2000,
-        async:true,
-        //data: $('#keyword').serialize(), //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
-        error:function (data) {
-           // alert('请求失败');
-        },
-        success:function (data) {
-            //alert(data)
-            var obj = $.parseJSON(data)
-            //alert(obj.data)
-            //alert(obj.data.length)
-            var str1 = "";
-            //清空table中的html
-            $("#test").html("");
-            for(var i = 0;i<obj.data.length;i++){
-                //alert(obj.data[i][2])
+    String.prototype.getValue= function(parm) {
+		var reg = new RegExp("(^|&)"+ parm +"=([^&]*)(&|$)");
+		var r = this.substr(this.indexOf("\?")+1).match(reg);
+		if (r!=null) return unescape(r[2]); return null;
+	}
+    var url = window.location.href
+    if(url.getValue("id") != null)
+    {
+        $("#test").html("");
+        var parm
+        id = url.getValue("id")
+        $.ajax({
+            url:'/searches/getbyid',
+            type:'post',
+            dataType:'json',
+            data:{"id":id},
+            timeout:2000,
+            async:true,
+            error:function(data){
+                alert('fail')
+            },
+            success:function(data){
+                collection = data['data']
+                // alert(collection.length)
+                $('#num').append(collection.length)
+                $("#test").html("");
+
+                    //alert(obj.data[i][2])
                 str1 = "<tr>" + 
-                    "<td>"+obj.data[i][0] + "</td>" +
-                    "<td>"+obj.data[i][1] + "</td>" +
-                    "<td>"+obj.data[i][2] + "</td>" +
-                    "</tr>";
+                        "<td>" + collection[0] + "</td>" +
+                        "<td>" + collection[1] + "</td>" +
+                        "<td>" + collection[4] + "</td>" +
+                        "<td><button type=\"button\" title=\"edit\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\">编辑</button></td>" +
+                        "<td><button type=\"button\" title=\"delete\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\">删除</button></td>" +
+                        "</tr>";
                 $("#test").append(str1);
             }
-        }
-    });
-}
-function subForm() {
-    $.ajax({
-        url: '/search', //请求的url
-        type: 'post', //请求的方式
-        timeout:2000,
-        async:true,
-        dataType:'json',
-        data: {'keyword':$("#keyword").val()}, //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
-        error:function (data) {
-            alert('请求失败');
-        },
-        success:function (data) {
-            //alert(data)
-        }
-    });
-    setInterval("update();",2000);
-}
+        });
+    }
+
 </script>
 <body>
     <h3># 1个关键词&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">增加关键词</button></h3>
@@ -69,17 +58,17 @@ function subForm() {
         <th>ID</th>
         <th>电影名</th>
         <th>关键词</th>
-        <th>语言</th>
+        <!-- <th>语言</th> -->
         <th>修改</th>
         <th>删除</th>
-        <tr>
+        <!-- <tr>
             <td>1761</td>
             <td>throne</td>
             <td>权力的游戏</td>
-            <td>中文简体</td>
-            <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick="subForm()">修改</button></td>
+            <!-- <td>中文简体</td> -->
+            <!-- <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick="subForm()">修改</button></td>
             <td><button type="button" title="Filter" class="button-new" style="margin-top:0px;" onclick="subForm()">删除</button></td>
-        </tr>
+        </tr> -->
         </thead>
         <tbody id="test">
         
