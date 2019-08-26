@@ -6,6 +6,31 @@
 </head>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script charset="utf-8">
+    keyword = ''
+function update(){
+    $.ajax({
+        url: '/searches/getsearchengine', //请求的url
+        type: 'post', //请求的方式
+        dataType:'json',
+        data:{"keyword":keyword},
+        timeout:2000,
+        async:true,
+        error:function(data){
+            // alert('fail')
+        },
+        success:function(data){
+            collection = data['data']
+            str1 = "<tr>" +
+                    "<td>" + collection[0] + "</td>" +
+                    "<td>" + collection[4] + "</td>" +
+                    "<td>" + collection[2] + "</td>" +
+                    "<td>" + "正在搜索" + "</td>" +
+                    "<td>" + collection[3] + "</td>" +
+                    "</tr>";
+                $("#test").html(str1);
+        }
+    });
+}
 String.prototype.getValue= function(parm) {
 		var reg = new RegExp("(^|&)"+ parm +"=([^&]*)(&|$)");
 		var r = this.substr(this.indexOf("\?")+1).match(reg);
@@ -48,6 +73,8 @@ String.prototype.getValue= function(parm) {
                         "</tr>";
                     $("#test").append(str1);
                 }
+                setInterval("update();",2000);
+
             }
         });
     }
