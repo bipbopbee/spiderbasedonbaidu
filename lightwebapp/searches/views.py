@@ -22,9 +22,11 @@ cursor = conn.cursor()
 from . import searches_home
 @searches_home.route("/getall", methods=['POST','GET'])
 def getall():
+    cursor = conn.cursor()
     print "getall"
     cursor.execute("select * from searches")
     collections = cursor.fetchall()
+    cursor.close()
     print collections
     t = {}
     t['code'] = 0
@@ -33,10 +35,12 @@ def getall():
 
 @searches_home.route("/getbyid", methods=['POST', 'GET'])
 def getbyid():
+    cursor = conn.cursor()
     id = request.form.get('id')
     print id
     cursor.execute("select * from searches where id = " + id)
     collections = cursor.fetchone()
+    cursor.close()
     print collections
     t = {}
     t['code'] = 0
@@ -46,18 +50,52 @@ def getbyid():
 
 @searches_home.route("/searchbykeyword", methods=['POST', 'GET'])
 def searchbykeyword():
+    cursor = conn.cursor()
     keyword = ""
     if request.method == 'POST':
         keyword = request.form.get('keyword')
         print keyword
         t = threading.Thread(target = start_search, args=(keyword,))
         t.start()
+
+    sql = "select * from searches where keyword = \'" + keyword + "\';"
+    cursor.execute(sql)
+    cursor.close
+    row = cursor.fetchone()
+    id = row[0]
+    num = int(row[5])
+    num = num + 1
+    sql = "update searches set searchnums=\'" + str(num) + "\' where id = " + str(id)
+    cursor = conn.cursor()
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+
+    cursor = conn.cursor()
     sql = "select * from searchengine where keyword = \'" + keyword + "\';"
     cursor.execute(sql)
     collections = cursor.fetchall()
-
+    cursor.close()
     t = {}
-    t['code'] = 0;
+    t['code'] = 0
     t['data'] = collections
     
+    return json.dumps(t, ensure_ascii=False)
+
+@searches_home.route("/getsearchengine", methods=['POST', 'GET'])
+def getsearchengine():
+    cursor = conn.cursor()
+    keyword = ''
+    if request.method == 'POST':
+        keyword = request.form.get('keyword')
+        print keyword
+    sql = "select * from searchengine where keyword = \'" + keyword + "\';"
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    cursor.close()
+
+    t = {}
+    t['code'] = 0
+    t['data'] = row
+
     return json.dumps(t, ensure_ascii=False)
