@@ -3,6 +3,7 @@ import urllib
 import urllib2
 import re
 import time
+import threading
 from datetime import datetime
 #from SpiderLogger import logger
 #from csimulate import getLineFileFunc
@@ -17,6 +18,7 @@ import socket
 socket.setdefaulttimeout(10.0)
 from opredis import lpush
 
+dblock = threading.Lock()
 import pymysql
 conn = pymysql.connect(
     host = '127.0.0.1',user = 'root',passwd = '123456',
@@ -79,24 +81,34 @@ def getvideoadress(url):
     return pattern.findall(strData)
 
 def start_search(keyword):
+    cursor = conn.cursor()
     num = 0
+    dblock.acquire()
     cursor.execute("select * from searchengine where keyword = \'" + keyword + "\'")
     collection = cursor.fetchall()
+    cursor.close()
+    dblock.release()
 
     dt = datetime.now()
     timestr = dt.strftime( '%Y-%m-%d %H:%M:%S' )
     print timestr
 
     if len(collection) == 0:
+        cursor = conn.cursor()
         num = 0
         sql = "insert into searchengine (id, name, keyword, searchnums, searchtime)  values (NULL, '百度', \'" + keyword +"\','0\',\'" + timestr + "\');"
         cursor.execute(sql)
         conn.commit()
+        cursor.close()
     else:
         sql = "update searchengine set searchtime=\'" + timestr + "\' where keyword=\'" + keyword + "\';"
         print sql
+        dblock.acquire()
+        cursor = conn.cursor()
         cursor.execute(sql)
         conn.commit()
+        cursor.close()
+        dblock.release()
         num = collection[0][3]
         print num
 
@@ -111,8 +123,13 @@ def start_search(keyword):
             num = int(num) + 1
             sql = "update searchengine set searchnums=\'" + str(num) + "\' where keyword=\'" + keyword + "\';"
             print sql
+            
+            dblock.acquire()
+            cursor = conn.cursor()
             cursor.execute(sql)
             conn.commit()
+            cursor.close()
+            dblock.release()
             lpush('myspider:start_urls', website)
         data = geturlpage(url[:-3] + nexturl)
         if nexturl == "":
