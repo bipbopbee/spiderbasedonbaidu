@@ -38,26 +38,41 @@ class CopyrightobserverPipeline(object):
             return item
         jobidstr = asyncqueryurl(item['videourl'], headers)
         jobid = json.loads(jobidstr)['data']['job']['id']
-        t = threading.Thread(target = threading_jobquey, args=(detailurl, headers, jobid))
+        t = threading.Thread(target = threading_jobquey, args=(detailurl, videourl, headers, jobid))
         t.start()
         return item
 
-def threading_jobquey(detailurl, headers, jobid):
+def threading_jobquey(hosturl, detailurl, headers, jobid):
     while True:
-        statusstr = queryjobstatus(jobid, headers = headers)
+        try:
+            statusstr = queryjobstatus(jobid, headers = headers)
+        except requests.exceptions.ConnectionError:
+            print "error"
         status = json.loads(statusstr)['data']['job']['status']
-        if status == 'finished':
+        if status == 'success':
+            print 'success'
             link = json.loads(statusstr)['data']['job']['result_url']
             matchesttr = querypersistedresult(link, headers)
+            print matchesttr
             matches = json.loads(matchesttr)['data']['matches']
+            print len(matches)
             i = 0
             contentid = ':'
             for i in range(len(matches)):
                 contentid = contentid + matches[i]['content']['content_id'] + ":"
-            break
+                print contentid
+
             if len(matches) > 0:
-                sql = "insert into privacy (url, contentid) values (\'"
-                sql = sql + detailurl + "\'," + "  ,\'" + contentid + "\')"
+                first_contentid = contentid.split(":")[1]
+                print first_contentid
+                sql = "select * from right_tmp where contentid = \'" + first_contentid + "\';"
+                cursor.execute(sql)
+                row = cursor.fetchone()
+                rightname = row[2]
+
+                sql = "insert into privacy (url, rightname, contentid, hosturl) values (\'"
+                sql = sql + detailurl + "\', \'" + rightname + "\', \'" + first_contentid + "\',\'" + hosturl + "\')"
+                print sql
                 cursor.execute(sql)
                 conn.commit()
             break
