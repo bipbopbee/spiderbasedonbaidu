@@ -21,7 +21,7 @@ cursor = conn.cursor()
 url = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
 name = "tmp.mp4"
 #ffmpeg -i "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8" -vcodec copy -acodec copy -absf aac_adtstoasc output.mp4
-def threading_jobquey(detailurl, headers, jobid):
+def threading_jobquey(hosturl, detailurl, headers, jobid):
     while True:
         try:
             statusstr = queryjobstatus(jobid, headers = headers)
@@ -32,15 +32,26 @@ def threading_jobquey(detailurl, headers, jobid):
             print 'success'
             link = json.loads(statusstr)['data']['job']['result_url']
             matchesttr = querypersistedresult(link, headers)
+            print matchesttr
             matches = json.loads(matchesttr)['data']['matches']
+            print len(matches)
             i = 0
             contentid = ':'
             for i in range(len(matches)):
                 contentid = contentid + matches[i]['content']['content_id'] + ":"
-            break
+                print contentid
+
             if len(matches) > 0:
-                sql = "insert into privacy (url, privacyname, contentid) values ("
-                sql = sql + detailurl + "，" + "  ," + contentid + ")"
+                first_contentid = contentid.split(":")[1]
+                print first_contentid
+                sql = "select * from right_tmp where contentid = \'" + first_contentid + "\';"
+                cursor.execute(sql)
+                row = cursor.fetchone()
+                rightname = row[2]
+
+                sql = "insert into privacy (url, rightname, contentid, hosturl) values (\'"
+                sql = sql + detailurl + "\', \'" + rightname + "\', \'" + first_contentid + "\',\'" + hosturl + "\')"
+                print sql
                 cursor.execute(sql)
                 conn.commit()
             break
@@ -50,11 +61,11 @@ def threading_jobquey(detailurl, headers, jobid):
             break
     pass
 
-def fingerprint_query(detailurl, desc72file, headers):
+def fingerprint_query(hosturl, detailurl, desc72file, headers):
     jobidstr = asyncquerylocalfile(desc72file, headers)
     print jobidstr
     jobid = json.loads(jobidstr)['data']['job']['id']
-    t = threading.Thread(target = threading_jobquey, args=(detailurl, headers, jobid))
+    t = threading.Thread(target = threading_jobquey, args=(hosturl, detailurl, headers, jobid))
     t.start()
     pass
 
@@ -90,7 +101,7 @@ def thread_download(detailurl, url, nowtime):
         if outtemp:
             outtemp.close()
     desc72_generate(nowtime + ".mp4")
-    fingerprint_query(detailurl, nowtime + ".mp4" + ".desc72", headers)
+    fingerprint_query(detailurl, url,  nowtime + ".mp4" + ".desc72", headers)
 
 if __name__ == "__main__":
     # nowtime = str(datetime.datetime.now().microsecond)
@@ -98,5 +109,5 @@ if __name__ == "__main__":
     # detailurl = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
     # t = threading.Thread(target=thread_download, args=(detailurl, url, nowtime))
     # t.start()
-    fingerprint_query(url, "656000.mp4.desc72", headers)
+    fingerprint_query("www.baidu.com", url, "21000.mp4.desc72", headers)
     pass
