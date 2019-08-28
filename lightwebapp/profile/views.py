@@ -104,7 +104,7 @@ def threading_jobinsert(rightname, headers, jobid):
             conn.commit()
 
             sql = "insert into searches (id, name, type, year, keyword, searchnums, lastsearchtime) values (NULL, \'"
-            sql = sql + rightname + "\', 'film', '2018', \'" + rightname + "\', \'0\', " + "'2018-10-14 09:10:33')"
+            sql = sql + rightname + "\', 'film', '2018', \'" + rightname + "\', \'0\', \'" + timestr + "\')"
             print sql
             cursor.execute(sql)
             conn.commit()
