@@ -81,7 +81,7 @@ def getvideoadress(url):
     return pattern.findall(strData)
 
 def start_search(keyword):
-    url = "http://www.baidu.com/s?"
+    url = "https://weixin.sogou.com/weixin?"
     #searchcount = 50
     #n = 0
     data = getsearchpagebykeyword(url, keyword)
