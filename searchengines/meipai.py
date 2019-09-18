@@ -185,8 +185,13 @@ def main(argv):
             break
 
 def js2python(base64str):
+    path = ''
+    if __name__ == '__main__':
+        path = "meipai.js"
+    else:
+        path = os.getcwd() + "/static/js/meipai.js"
     js = ''
-    with open('meipai.js','r') as f:
+    with open(path,'r') as f:
         js = f.read()
 
     calljs = execjs.compile(js)
