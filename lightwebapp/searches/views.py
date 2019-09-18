@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 import sys
 sys.path.append("../..")
 from videntify.curl2python import *
-from searchengines.searchengine import *
+from searchengines.searchstartup import *
 import threading
 import json
 import time
@@ -55,7 +55,7 @@ def searchbykeyword():
     if request.method == 'POST':
         keyword = request.form.get('keyword')
         print keyword
-        t = threading.Thread(target = start_search, args=(keyword,))
+        t = threading.Thread(target = startsupall, args=(keyword.encode('gbk'),))
         t.start()
 
     sql = "select * from searches where keyword = \'" + keyword + "\';"
