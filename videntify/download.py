@@ -67,6 +67,8 @@ def fingerprint_query(hosturl, detailurl, desc72file, headers):
     jobid = json.loads(jobidstr)['data']['job']['id']
     t = threading.Thread(target = threading_jobquey, args=(hosturl, detailurl, headers, jobid))
     t.start()
+    #等待线程结束
+    t.join()
     pass
 
 def desc72_generate(filename):
@@ -94,20 +96,24 @@ def thread_download(detailurl, url, nowtime):
         fd.communicate()
         #outtemp.seek(0)
         #lines = outtemp.readlines()
-        #print lines
+        #print linesse
     except Exception, e:
         print traceback.format_exc()
     finally:
         if outtemp:
             outtemp.close()
-    desc72_generate(nowtime + ".mp4")
-    fingerprint_query(detailurl, url,  nowtime + ".mp4" + ".desc72", headers)
+
+    if os.path.exists(nowtime + ".mp4"):
+        desc72_generate(nowtime + ".mp4")
+        os.remove(nowtime + ".mp4")
+        fingerprint_query(detailurl, url,  nowtime + ".mp4" + ".desc72", headers)
 
 if __name__ == "__main__":
-    # nowtime = str(datetime.datetime.now().microsecond)
-    # print nowtime
-    # detailurl = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
-    # t = threading.Thread(target=thread_download, args=(detailurl, url, nowtime))
-    # t.start()
-    fingerprint_query("www.baidu.com", url, "21000.mp4.desc72", headers)
+    nowtime = str(datetime.datetime.now().microsecond)
+    print nowtime
+    detailurl = 'http://www.bilibili.com/video/av20169226?from=search'
+    videourl = 'https://api.bilibili.com/playurl?callback=callbackfunction&aid=51585747&page=1&platform=html5&quality=1&vtype=mp4&type=jsonp'
+    t = threading.Thread(target=thread_download, args=(detailurl, videourl, nowtime))
+    t.start()
+    #fingerprint_query("www.baidu.com", url, "21000.mp4.desc72", headers)
     pass
