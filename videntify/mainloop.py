@@ -4,6 +4,7 @@ import sys
 import datetime
 import time
 import threading
+import uuid
 from download import *
 sys.path.append("..")
 from database.opredis import *
@@ -31,8 +32,9 @@ def thread_function(keystr):
         print data
         hosturl = data['detailurl']
         videourl = data['videourl']
-        nowtime = str(datetime.datetime.now().microsecond)
-        thread_download(hosturl, videourl, nowtime)
+        #nowtime = str(datetime.datetime.now().microsecond)
+        filename = str(uuidsed.uuid1())
+        thread_download(hosturl, videourl, filename)
     pass
 
 if __name__ == '__main__':
