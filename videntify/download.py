@@ -10,6 +10,7 @@ from curl2python import *
 import json
 import pymysql
 import time
+import uuid as uuidsed
 headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
 conn = pymysql.connect(
     host = '127.0.0.1',user = 'root',passwd = '123456',
@@ -27,6 +28,7 @@ def threading_jobquey(hosturl, detailurl, headers, jobid):
             statusstr = queryjobstatus(jobid, headers = headers)
         except requests.exceptions.ConnectionError:
             print "error"
+            return
         status = json.loads(statusstr)['data']['job']['status']
         if status == 'success':
             print 'success'
@@ -69,6 +71,7 @@ def fingerprint_query(hosturl, detailurl, desc72file, headers):
     t.start()
     #等待线程结束
     t.join()
+    os.remove(desc72file)
     pass
 
 def desc72_generate(filename):
@@ -87,9 +90,9 @@ def desc72_generate(filename):
         if outtemp:
             outtemp.close()
 
-def thread_download(detailurl, url, nowtime):
+def thread_download(detailurl, url, uuid):
     try:
-        command = "ffmpeg -i " + url + " -vcodec copy -acodec copy -absf aac_adtstoasc " + nowtime + ".mp4"
+        command = "ffmpeg -i " + url + " -vcodec copy -acodec copy -absf aac_adtstoasc " + uuid + ".mp4"
         outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
         fileno = outtemp.fileno()
         fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
@@ -103,17 +106,20 @@ def thread_download(detailurl, url, nowtime):
         if outtemp:
             outtemp.close()
 
-    if os.path.exists(nowtime + ".mp4"):
-        desc72_generate(nowtime + ".mp4")
-        os.remove(nowtime + ".mp4")
-        fingerprint_query(detailurl, url,  nowtime + ".mp4" + ".desc72", headers)
+    if os.path.exists(uuid + ".mp4"):
+        desc72_generate(uuid + ".mp4")
+        os.remove(uuid + ".mp4")
+        fingerprint_query(detailurl, url,  uuid + ".mp4" + ".desc72", headers)
 
 if __name__ == "__main__":
-    nowtime = str(datetime.datetime.now().microsecond)
-    print nowtime
-    detailurl = 'http://www.bilibili.com/video/av20169226?from=search'
-    videourl = 'https://api.bilibili.com/playurl?callback=callbackfunction&aid=51585747&page=1&platform=html5&quality=1&vtype=mp4&type=jsonp'
-    t = threading.Thread(target=thread_download, args=(detailurl, videourl, nowtime))
-    t.start()
-    #fingerprint_query("www.baidu.com", url, "21000.mp4.desc72", headers)
-    pass
+    uuid = uuidsed.uuid1()
+    print uuid
+    # return
+    # nowtime = str(datetime.datetime.now().microsecond)
+    # print nowtime
+    # detailurl = 'http://www.bilibili.com/video/av20169226?from=search'
+    # videourl = 'https://api.bilibili.com/playurl?callback=callbackfunction&aid=51585747&page=1&platform=html5&quality=1&vtype=mp4&type=jsonp'
+    # t = threading.Thread(target=thread_download, args=(detailurl, videourl, nowtime))
+    # t.start()
+    # #fingerprint_query("www.baidu.com", url, "21000.mp4.desc72", headers)
+    # pass
