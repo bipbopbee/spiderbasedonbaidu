@@ -194,5 +194,7 @@ def main(argv):
         if nexturl == "":
             break
 if __name__ == '__main__':
-    start_search('钢铁侠'.encode('gbk'))
+    print getrealvideourl('http://so.iqiyi.com/links/qcAdm6fzqd2Da5AHK1fa8AjE_pjgrwo30uShwvURIkLJ0Ni0R408WwrZ4x5P4VmPz-C4MMuvGYwiF-rMlitQfg==')
+    print getrealvideourl_1('http://so.iqiyi.com/links/qcAdm6fzqd2Da5AHK1fa8AjE_pjgrwo30uShwvURIkLJ0Ni0R408WwrZ4x5P4VmPz-C4MMuvGYwiF-rMlitQfg==')
+    #start_search('钢铁侠'.encode('gbk'))
     #main(sys.argv)
