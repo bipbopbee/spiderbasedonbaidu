@@ -22,7 +22,7 @@ cursor = conn.cursor()
 url = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
 name = "tmp.mp4"
 #ffmpeg -i "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8" -vcodec copy -acodec copy -absf aac_adtstoasc output.mp4
-def threading_jobquey(hosturl, detailurl, headers, jobid):
+def threading_jobquey(hosturl, detailurl, headers, jobid, desc72file):
     while True:
         try:
             statusstr = queryjobstatus(jobid, headers = headers)
@@ -61,17 +61,18 @@ def threading_jobquey(hosturl, detailurl, headers, jobid):
             break
         elif status == 'cancelled':
             break
+    os.remove(desc72file)
     pass
 
 def fingerprint_query(hosturl, detailurl, desc72file, headers):
     jobidstr = asyncquerylocalfile(desc72file, headers)
     print jobidstr
     jobid = json.loads(jobidstr)['data']['job']['id']
-    t = threading.Thread(target = threading_jobquey, args=(hosturl, detailurl, headers, jobid))
+    t = threading.Thread(target = threading_jobquey, args=(hosturl, detailurl, headers, jobid, desc72file))
     t.start()
     #等待线程结束
-    t.join()
-    os.remove(desc72file)
+    #t.join()
+    #os.remove(desc72file)
     pass
 
 def desc72_generate(filename):
