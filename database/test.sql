@@ -25,9 +25,10 @@ create table `right_tmp`  (
 ) DEFAULT CHARSET=utf8;
 create table `privacy` (
     `privacyid` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `url` varchar (150) NOT NULL,
+    `url` varchar (1000) NOT NULL,
     `rightname` varchar (150) NOT NULL,
-    `contentid` int (11) NOT NULL
+    `contentid` int (11) NOT NULL,
+    `hosturl` varchar (150) NOT NULL
 )DEFAULT CHARSET=utf8;
 create table `gongzhonghao` (
     `id` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -104,3 +105,5 @@ alter table tengxun alter column videourl varchar(1000) NOT NULL;
 update searchengine set searchnums= 1003 where keyword='急速追杀';
 alter table searchengine add column (searchtime char(150));
 alter table privacy add column (hosturl char(150));
+alter table privacy alter column url varchar(1000) NOT NULL;
+insert into privacy (url, rightname, contentid, hosturl) values ('https://api.nxflv.com/data/iqiyi/d3d4412c25630ce642770d51663cd7a3.m3u8', '蜘蛛侠3', '240320','http://www.iqiyi.com/v_19rszmv9hg.html')
