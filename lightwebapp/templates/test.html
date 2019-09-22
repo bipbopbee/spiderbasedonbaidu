@@ -54,7 +54,7 @@ ul{list-style:none;}
         function openNew(id, name) {
             var tagMenu = document.createElement("li");
             tagMenu.id = "p" + id;
-            tagMenu.innerHTML = name + "   " + "<img src='http://www.tjdadi.com.cn/off.gif' style='vertical-align:middle'/>";
+            tagMenu.innerHTML = name + "   " + "<img src='#' style='vertical-align:middle'/>";
             //标签点击事件
             tagMenu.onclick = function (evt) {
                 clearStyle();
@@ -102,7 +102,7 @@ ul{list-style:none;}
 </head>
 <body>
 <div id="top">
-<h2>工具菜单</h2>
+<h2>导航栏</h2>
 <div id="topTags">
 <ul>
 </ul>
@@ -111,11 +111,10 @@ ul{list-style:none;}
 <div id="main"> 
 <div id="leftMenu">
 <ul>
-<!-- <li><a href="#" target="dddd">Discovery</a></li> -->
 <li><a href="{{url_for('static',filename='search_bak.html')}}" target="content1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;搜索</a></li>
 <li><a href="#" target="content2" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;域名</a></li>
 <li><a href="#" target="content3" color="#696969">分析</a></li>
-<li><a href="{{url_for('static',filename='validation.html')}}" target="content4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;验证</a></li>
+<li><a href="{{url_for('static',filename='validation.html')}}" target="content4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;盗版视频</a></li>
 <li><a href="#" target="content5">资产</a></li>
 <li><a href="#" target="content6" color="#696969">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电影</a></li>
 <li><a href="#" target="content7" color="#696969">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;电视剧</a></li>
@@ -133,7 +132,7 @@ ul{list-style:none;}
 <div id="welcome" class="content" style="display:block;">
   <div align="center">
     <p> </p>
-    <p><strong>欢迎使用用户管理系统！</strong></p>
+    <p><strong>欢迎使用盗版监测平台</strong></p>
     <p> </p>
     </div>
 </div>
