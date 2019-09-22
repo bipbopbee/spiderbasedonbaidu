@@ -21,6 +21,31 @@ ul{list-style:none;}
 .content iframe{width:100%;height:100%}
 #footer{width:900px;height:30px;margin:0 auto;background-color:#ccc;line-height:30px;text-align:center;}
 .content1 {width:740px;height:490px;display:block;padding:5px;overflow-y:auto;line-height:30px;}
+table
+        {
+            border-collapse: collapse;
+            margin: 0 auto;
+            text-align: center;
+        }
+        table td, table th
+        {
+            border: 1px solid #cad9ea;
+            color: #666;
+            height: 30px;
+        }
+        table thead th
+        {
+            background-color: #CCE8EB;
+            width: 100px;
+        }
+        table tr:nth-child(odd)
+        {
+            background: #fff;
+        }
+        table tr:nth-child(even)
+        {
+            background: #F5FAFA;
+        }
 </style>
 <script type="text/javascript">
     window.onload = function () {
@@ -54,7 +79,8 @@ ul{list-style:none;}
         function openNew(id, name) {
             var tagMenu = document.createElement("li");
             tagMenu.id = "p" + id;
-            tagMenu.innerHTML = name + "   " + "<img src='http://www.tjdadi.com.cn/off.gif' style='vertical-align:middle'/>";
+            //tagMenu.innerHTML = name + "   " + "<img src='http://www.tjdadi.com.cn/off.gif' style='vertical-align:middle'/>";
+            tagMenu.innerHTML = name + "   " + "<img src={{url_for('static', filename='images/close.png')}} style='vertical-align:middle'/>";
             //标签点击事件
             tagMenu.onclick = function (evt) {
                 clearStyle();
