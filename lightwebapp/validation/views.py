@@ -32,7 +32,17 @@ def getall():
 
     t = {}
     t['code'] = 0
-    t['data'] = collections
+    #t['data'] = collections
+    tmplist = []
+    for i in range(len(collections)):
+        tmp = {}
+        tmp['privacyid'] = collections[i][0]
+        tmp['url'] = collections[i][1]
+        tmp['rightname'] = collections[i][2]
+        tmp['contentid'] = collections[i][3]
+        tmp['hosturl'] = collections[i][4]
+        tmplist.append(tmp)
+    t['data'] = tmplist
     return json.dumps(t, ensure_ascii=False)
 
 @validation_home.route("/getbyid", methods=['POST', 'GET'])
