@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <title>视频上传</title>
 </head>
+<script src="js/jquery-3.1.1.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#loading').toggle();
+        $('.button-new').click(function(){
+            $('#loading').toggle();
+        });
+    } );
+</script>
 <body>
     <h1>视频上传</h1>
     <br>
@@ -16,5 +25,6 @@
         <input type="text" class="txt_input" name="name"  value="" style="margin-top:10px;"/>
         <input type="submit" value="上传" class="button-new" style="margin-top:15px;"/>
     </form>
+    <img src="images/loading.gif" id="loading" display="none"/>
 </body>
 </html>
