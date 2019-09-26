@@ -32,6 +32,26 @@ def allowed_file(filename):
 def index():
     return "index"
 
+@profile_home.route("/deletebyid", methods=['POST', 'GET'])
+def deletebyid():
+    id = ''
+    if request.method == 'POST':
+       id = request.form.get('id')
+       print id
+    sql = "delete from right_tmp where contentid = " + id
+    cursor.execute(sql)
+    conn.commit()
+
+    apitoken = session['apitoken'].encode('raw_unicode_escape')
+    headers = {"Authorization":apitoken}
+    deletecontent(id, headers)
+
+    t = {}
+    t['code'] = 0
+    t['data'] = "done"
+
+    return json.dumps(t,ensure_ascii=False)
+
 @profile_home.route("/getall", methods=['POST', 'GET'])
 def getall():
     cursor.execute("select *  from right_tmp")
@@ -39,7 +59,18 @@ def getall():
     print collections
     t = {}
     t['code'] = 0
-    t['data'] = collections
+    #t['data'] = collections
+    tmplist = []
+    for i in range(len(collections)):
+        tmp = {}
+        tmp['rightid'] = collections[i][0]
+        tmp['createtime'] = collections[i][1]
+        tmp['rightname'] = collections[i][2]
+        tmp['url'] = collections[i][3]
+        tmp['email'] = collections[i][4]
+        tmp['contentid'] = collections[i][5]
+        tmplist.append(tmp)
+    t['data'] = tmplist
     return json.dumps(t,ensure_ascii=False)
 
 @profile_home.route("/upload", methods=['POST', 'GET'])
