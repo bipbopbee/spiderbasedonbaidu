@@ -4,77 +4,122 @@
     <meta charset="UTF-8">
     <title>盗版监测平台上传演示</title>
 </head>
-<script src="js/jquery-3.1.1.min.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
 <script>
-    $.ajax({
-        url:'/profile/getall',
-        type:'post',
-        timeout:2000,
-        async:true,
-        error:function(data){
-            alert('请求失败')
-        },
-        success:function(data){
-            obj = jQuery.parseJSON(data)
-            collection = obj['data']
-            $('#num').append(collection.length)
-            $("#test").html("");
-            for(var i = 0;i<collection.length;i++){
-                //alert(obj.data[i][2])
-                str1 = "<tr>" + 
-                    "<td>" + collection[i][0] + "</td>" +
-                    "<td>" + collection[i][1] + "</td>" +
-                    "<td>" + collection[i][2] + "</td>" +
-                    "<td>" + collection[i][3] + "</td>" +
-                    "<td>" + collection[i][4] + "</td>" +
-                    "<td>" + collection[i][5] + "</td>" +
-                    "<td><button type=\"button\" title=\"edit\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\">编辑</button></td>" +
-                    "<td><button type=\"button\" title=\"delete\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\">删除</button></td>" +
-                    "<td><button type=\"button\" title=\"View\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\">查看</button></td>" +
-                    "</tr>";
-                $("#test").append(str1);
+    $(document).ready(function(){
+        var dtable = $('#mytable').DataTable({
+            "language":{
+               url:"/static/chinese.json"
+            },
+            "cell-border":"true",
+            "hover":"true",
+            "ajax":"/profile/getall",
+            "columns": [
+                { "data": "rightid"},
+                { "data": "createtime"},
+                { "data": "rightname"},
+                { "data": "url"},
+                { "data": "email"},
+                { "data": "contentid"},
+                { "data": null, "render":function(){
+                    var html = "<button id=\"edit\" >编辑</button>";
+                    return html
+                }},
+                {"data":null, "render":function(){
+                    var html = "<button id=\"delete\" >删除</button>";
+                    return html
+                }}
+            ],
+            "createdRow": function( row, data, dataIndex ) {
+                    $(row).children('td').eq(0).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(1).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(2).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(3).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(4).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(5).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(6).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(7).attr('style', 'text-align: center;')
             }
-        }
-    });
-    $('#mytable').on('click()', 'tr',function(){
-        alert('dkjkk')
-    });
-function subForm() {
-    $.ajax({
-        url: '/profile/', //请求的url
-        type: 'post', //请求的方式
-        timeout:2000,
-        async:false,
-        //dataType:'json',
-        // data: {'keyword':$("#keyword").val()}, //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
-        // error:function (data) {
-        //     alert(data);
-        // },
-        success:function (data) {
-            //alert(data)
-        }
-    });
-}
+        });
+
+        dtable.on("click","button#delete",function(){
+            var row = dtable.row($(this).parents('tr'));
+            var data = row.data();
+            id = data.contentid;
+            $.ajax({
+                    type: "post",
+                    url: '/profile/deletebyid',
+                    data: {
+                        "id" : id,
+                    },
+                    dataType:'json',
+                    cache: false,
+                    success: function(data){
+                        row.remove().draw(false);
+                    }
+            });
+        });
+    } );
+//     $.ajax({
+//         url:'/profile/getall',
+//         type:'post',
+//         timeout:2000,
+//         async:true,
+//         error:function(data){
+//             alert('请求失败')
+//         },
+//         success:function(data){
+//             obj = jQuery.parseJSON(data)
+//             collection = obj['data']
+//             $('#num').append(collection.length)
+//             $("#test").html("");
+//             for(var i = 0;i<collection.length;i++){
+//                 //alert(obj.data[i][2])
+//                 str1 = "<tr>" +
+//                     "<td>" + collection[i][0] + "</td>" +
+//                     "<td>" + collection[i][1] + "</td>" +
+//                     "<td>" + collection[i][2] + "</td>" +
+//                     "<td>" + collection[i][3] + "</td>" +
+//                     "<td>" + collection[i][4] + "</td>" +
+//                     "<td>" + collection[i][5] + "</td>" +
+//                     "<td><button type=\"button\" title=\"edit\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\">编辑</button></td>" +
+//                     "<td><button type=\"button\" title=\"delete\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\">删除</button></td>" +
+//                     "<td><button type=\"button\" title=\"View\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\">查看</button></td>" +
+//                     "</tr>";
+//                 $("#test").append(str1);
+//             }
+//         }
+//     });
+//     $('#mytable').on('click()', 'tr',function(){
+//         alert('dkjkk')
+//     });
+// function subForm() {
+//     $.ajax({
+//         url: '/profile/', //请求的url
+//         type: 'post', //请求的方式
+//         timeout:2000,
+//         async:false,
+//         //dataType:'json',
+//         // data: {'keyword':$("#keyword").val()}, //form表单里要提交的内容，里面的input等写上name就会提交，这是序列化
+//         // error:function (data) {
+//         //     alert(data);
+//         // },
+//         success:function (data) {
+//             //alert(data)
+//         }
+//     });
+// }
 </script>
 <body>
-    <h3><a id="num"></a> 配置&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="upload.html"><button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">添加配置</button></a></h3>
-        <input type="text" class="txt_input" name="ID"  value="" style="margin-top:10px;" id="ID"/>
-        <input type="text" class="txt_input" name="NameContains"  value="" style="margin-top:10px;" id="NameContains"/>
-        <input type="text" class="txt_input" name="DomainContains"  value="" style="margin-top:10px;" id="DomainContains"/>
-        <select name="sel">
-                <option value="1">Unknown</option>
-         </select>
-         <select name="sel1">
-                <option value="1">Unknown</option>
-         </select>
-         <select name="sel2">
-                <option value="1">Unknown</option>
-         </select>
-         <select name="sel3">
-                <option value="1">Unknown</option>
-         </select>
-        <button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="">过滤</button>
-    <table id="mytable" border="2">
+    <h3><a href="upload.html"><button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">添加配置</button></a></h3>
+    <table id="mytable" border="1">
         <thead>
         <th>ID</th>
         <th>创建时间</th>
@@ -84,15 +129,9 @@ function subForm() {
         <th>内容ID</th>
         <th>编辑</th>
         <th>删除</th>
-        <th>查看</th>
-        <tr>
-        </tr>
         </thead>
         <tbody id="test">
         </tbody>
     </table>
-    <div class="intrduction">
-        影片介绍
-    </div>
 </body>
 </html>
