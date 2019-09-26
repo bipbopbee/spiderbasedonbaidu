@@ -30,7 +30,20 @@ def getall():
     print collections
     t = {}
     t['code'] = 0
-    t['data'] = collections
+    #t['data'] = collections
+    tmplist = []
+    for i in range(len(collections)):
+        tmp = {}
+        tmp['id'] = collections[i][0]
+        tmp['name'] = collections[i][1]
+        tmp['type'] = collections[i][2]
+        tmp['year'] = collections[i][3]
+        tmp['keyword'] = collections[i][4]
+        tmp['searchnums'] = collections[i][5]
+        tmp['lastsearchtime'] = collections[i][6]
+        tmplist.append(tmp)
+
+    t['data'] = tmplist
     return json.dumps(t, ensure_ascii=False)
 
 @searches_home.route("/getbyid", methods=['POST', 'GET'])
@@ -78,8 +91,18 @@ def searchbykeyword():
     cursor.close()
     t = {}
     t['code'] = 0
-    t['data'] = collections
-    
+    #t['data'] = collections
+    tmplist = []
+    for i in range(len(collections)):
+        tmp = {}
+        tmp['id'] = collections[i][0]
+        tmp['name'] = collections[i][1]
+        tmp['keyword'] = collections[i][2]
+        tmp['searchnums'] = collections[i][3]
+        tmp['lastsearchtime'] = collections[i][4]
+        tmplist.append(tmp)
+    t['data'] = tmplist
+
     return json.dumps(t, ensure_ascii=False)
 
 @searches_home.route("/getsearchengine", methods=['POST', 'GET'])
