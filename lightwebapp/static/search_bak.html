@@ -4,65 +4,100 @@
     <meta charset="UTF-8">
     <title>盗版监测平台上传演示</title>
 </head>
-<script src="js/jquery-3.1.1.min.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
 <script>
-    $.ajax({
-        url:'/searches/getall',
-        type:'post',
-        timeout:2000,
-        async:true,
-        error:function(data){
-            alert('请求失败')
-        },
-        success:function(data){
-            obj = jQuery.parseJSON(data)
-            collection = obj['data']
-            $('#num').append(collection.length)
-            $("#test").html("");
-            for(var i = 0;i<collection.length;i++){
-                //alert(obj.data[i][2])
-                str1 = "<tr>" + 
-                    "<td>" + collection[i][0] + "</td>" +
-                    "<td>" + collection[i][1] + "</td>" +
-                    "<td>" + collection[i][2] + "</td>" +
-                    "<td>" + collection[i][3] + "</td>" +
-                    "<td><a href=\"language_filter.html?id=" + collection[i][0] + "\">" + collection[i][4] + "</a></td>" +
-                   // "<td><input type=\"button\" value=\"" + collection[i][4] + "\" id = \"tdkeyword\" onclick=\"javascript:addkeyword(this);\"></td>" +
-                    "<td>" + collection[i][5] + "</td>" +
-                    "<td>" + collection[i][6] + "</td>" +
-                    "<td><button type=\"button\" title=\"View\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\"><a href=\"lanuch_new_search.html?keyword=" + collection[i][4] + "\">重新搜索</a></button></td>" +
-                    "</tr>";
-                $("#test").append(str1);
+    // $.ajax({
+    //     url:'/searches/getall',
+    //     type:'post',
+    //     timeout:2000,
+    //     async:true,
+    //     error:function(data){
+    //         alert('请求失败')
+    //     },
+    //     success:function(data){
+    //         obj = jQuery.parseJSON(data)
+    //         collection = obj['data']
+    //         $('#num').append(collection.length)
+    //         $("#test").html("");
+    //         for(var i = 0;i<collection.length;i++){
+    //             //alert(obj.data[i][2])
+    //             str1 = "<tr>" +
+    //                 "<td>" + collection[i][0] + "</td>" +
+    //                 "<td>" + collection[i][1] + "</td>" +
+    //                 "<td>" + collection[i][2] + "</td>" +
+    //                 "<td>" + collection[i][3] + "</td>" +
+    //                 "<td><a href=\"language_filter.html?id=" + collection[i][0] + "\">" + collection[i][4] + "</a></td>" +
+    //                // "<td><input type=\"button\" value=\"" + collection[i][4] + "\" id = \"tdkeyword\" onclick=\"javascript:addkeyword(this);\"></td>" +
+    //                 "<td>" + collection[i][5] + "</td>" +
+    //                 "<td>" + collection[i][6] + "</td>" +
+    //                 "<td><button type=\"button\" title=\"View\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\"><a href=\"lanuch_new_search.html?keyword=" + collection[i][4] + "\">重新搜索</a></button></td>" +
+    //                 "</tr>";
+    //             $("#test").append(str1);
+    //         }
+    //     }
+    // });
+    // function addkeyword(obj){
+    //      alert(obj.parentNode.parentNode.rowIndex)
+    //      $.post('/searches/getbyid', {id:1})
+
+    //     //  $.ajax({
+    //     //     url:'/searches/getbyid',
+    //     //     type:'post',
+    //     //     timeout:2000,
+    //     //     async:true,
+    //     //     error:function(data){
+    //     //         alert('fail')
+    //     //     },
+    //     //     success:function(data){
+    //     //         alert('success')
+    //     //     }
+    //     //  });
+    // };
+    $(document).ready(function(){
+        $('#mytable').DataTable({
+            "language":{
+               url:"/static/chinese.json"
+            },
+            "cell-border":"true",
+            "hover":"true",
+            "ajax":"/searches/getall",
+            "columns": [
+                { "data": "id" },
+                { "data": "name" },
+                { "data": "type" },
+                { "data": "year" },
+                { "data": null, "render":function(data, type, row, meta){
+                    var html = "<a href=\"language_filter.html?id=" + data['id'] + "\">" + data['keyword'] + "</a>";
+                    return html;
+                }},
+                { "data": "searchnums" },
+                { "data": "lastsearchtime" },
+                {"data":null,"render":function(data, type, row, meta){
+                    var html = "<button type=\"button\" title=\"View\" class=\"button-new\" style=\"margin-top:0px;\" onclick=\"\"><a href=\"lanuch_new_search.html?keyword=" + data['name'] + "\">重新搜索</a></button>"
+                    return html;
+                }}
+            ],
+            "createdRow": function( row, data, dataIndex ) {
+                    $(row).children('td').eq(0).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(1).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(2).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(3).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(4).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(5).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(6).attr('style', 'text-align: center;')
             }
-        }
-    });
-    function addkeyword(obj){
-         alert(obj.parentNode.parentNode.rowIndex)
-         $.post('/searches/getbyid', {id:1})
-
-        //  $.ajax({
-        //     url:'/searches/getbyid',
-        //     type:'post',
-        //     timeout:2000,
-        //     async:true,
-        //     error:function(data){
-        //         alert('fail')
-        //     },
-        //     success:function(data){
-        //         alert('success')
-        //     }
-        //  });
-    };
-
+        });
+    } );
 </script>
 <body>
-    <h3><a id="num"></a> 个搜索影片</h3>
-        <input type="text" class="txt_input" name="ID"  value="" style="margin-top:10px;" id="ID" placeholder="ID"/>
-        <input type="text" class="txt_input" name="keyword"  value="" style="margin-top:10px;" id="keyword" placeholder="电影名"/>
-        <input type="text" class="txt_input" name="imdbid"  value="" style="margin-top:10px;" id="imdbid" placeholder="Imdb id"/>
-        <input type="text" class="txt_input" name="Year"  value="" style="margin-top:10px;" id="Year" placeholder="年代"/>
-        <button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="subForm()">过滤</button>
-    <table id="mytable" border="2">
+    <table id="mytable">
         <thead>
         <th>ID</th>
         <th>影片名</th>
