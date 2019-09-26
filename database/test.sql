@@ -95,6 +95,15 @@ create table `tengxun` (
     `videourl` varchar (1000) NOT NULL,
     `upname` varchar (150) NOT NULL
 )DEFAULT CHARSET=utf8;
+
+drop table if exists `appium`;
+create table `appium` (
+    `id` int (11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `keyword` varchar (150) NOT NULL,
+    `check` varchar (150) NOT NULL,
+    `lastsearchtime` varchar (150) NOT NULL
+)DEFAULT CHARSET=utf8;
+
 insert into privacy (privacyid, url, rightname, contentid)  values (NULL, 'http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8','急速追杀', 240303);
 insert into user (userid, username, userpassword, email, apitoken, role)  values (NULL, 'abc','abc', '516854715@qq.com', 'LWtrKgMmLIeAWyyDUlLa', 'basic');
 insert into user (userid, username, userpassword, email, apitoken, role)  values (NULL, 'tom','abc', '123456@qq.com', 'LWtrKgMmLIeAWyyDUlLa', 'basic');
