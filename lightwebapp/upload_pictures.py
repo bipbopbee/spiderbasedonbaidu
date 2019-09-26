@@ -43,6 +43,9 @@ app.register_blueprint(searches_blueprint, url_prefix="/searches")
 from validation.views import validation_home as validation_blueprint
 app.register_blueprint(validation_blueprint, url_prefix="/validation")
 
+from appium.views import appium_home as appium_blueprint
+app.register_blueprint(appium_blueprint, url_prefix="/appium")
+
 @app.route('/index', methods=['POST', 'GET'])
 def home():
     return render_template('login.html')
