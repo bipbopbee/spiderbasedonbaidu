@@ -4,56 +4,81 @@
     <meta charset="UTF-8">
     <title>盗版监测平台上传演示</title>
 </head>
-<script src="js/jquery-3.1.1.min.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
 <script>
-    $.ajax({
-        url:'/validation/getall',
-        type:'post',
-        timeout:2000,
-        async:true,
-        error:function(data){
-            alert('请求失败')
-        },
-        success:function(data){
-            obj = jQuery.parseJSON(data)
-            collection = obj['data']
-            //alert(collection)
-            $('#num').append(collection.length)
-            $("#test").html("");
-            for(var i = 0;i<collection.length;i++){
-                //alert(obj.data[i][2])
-                str1 = "<tr>" + 
-                    "<td>" + collection[i][0] + "</td>" +
-                    "<td><a href=\"validate_detail_left.html?id=" + collection[i][0] + "\">" + collection[i][2] + "</a></td>" +
-                    "<td>" + collection[i][1] + "</td>" +
-                    "<td>" + collection[i][4] + "</td>" +
-                    "<td>" + collection[i][3] + "</td>" +
-                    "</tr>";
-                $("#test").append(str1);
+    $(document).ready(function(){
+        $('#mytable').DataTable({
+            "language":{
+               url:"/static/chinese.json"
+            },
+            "cell-border":"true",
+            "hover":"true",
+            "ajax":"/validation/getall",
+            "columns": [
+                { "data": "privacyid" },
+                { "data": "rightname" },
+                { "data": null, "render":function(data, type, full, meta){
+                    return "<div style=\"width:100px;height:25px;overflow-x:hidden;overflow-y:hidden;\">" + "<a href=\"validate_detail_left.html?id=" + data['privacyid'] + "\">" + data['url'] + "</a></div>"
+                }},
+                { "data": "hosturl" },
+                { "data": "contentid" }
+            ],
+            "createdRow": function( row, data, dataIndex ) {
+                    $(row).children('td').eq(0).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(1).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(2).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(3).attr('style', 'text-align: center;')
+                    $(row).children('td').eq(4).attr('style', 'text-align: center;')
             }
-        }
-    });
+        });
+    } );
+    // $.ajax({
+    //     url:'/validation/getall',
+    //     type:'post',
+    //     timeout:2000,
+    //     async:true,
+    //     error:function(data){
+    //         alert('请求失败')
+    //     },
+    //     success:function(data){
+    //         obj = jQuery.parseJSON(data)
+    //         collection = obj['data']
+    //         //alert(collection)
+    //         $('#num').append(collection.length)
+    //         $("#test").html("");
+    //         for(var i = 0;i<collection.length;i++){
+    //             //alert(obj.data[i][2])
+    //             str1 = "<tr>" +
+    //                 "<td>" + collection[i][0] + "</td>" +
+    //                 "<td><a href=\"validate_detail_left.html?id=" + collection[i][0] + "\">" + collection[i][2] + "</a></td>" +
+    //                 "<td>" + collection[i][1] + "</td>" +
+    //                 "<td>" + collection[i][4] + "</td>" +
+    //                 "<td>" + collection[i][3] + "</td>" +
+    //                 "</tr>";
+    //             $("#test").append(str1);
+    //         }
+    //     }
+    // });
 </script>
 <body>
-    <h3># <a id="num"></a>验证影片个数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="">添加待验证URL</button></h3>
-        <input type="text" class="txt_input" name="ID"  value="" style="margin-top:10px;" id="ID"/>
-        <input type="text" class="txt_input" name="Title"  value="" style="margin-top:10px;" id="Title"/>
-        <input type="text" class="txt_input" name="imdbid"  value="" style="margin-top:10px;" id="imdbid"/>
-        <input type="text" class="txt_input" name="Tenant"  value="" style="margin-top:10px;" id="Tenart name contains"/>
-        <button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="">过滤</button>
-    <table id="mytable" border="2">
+<button type="button" title="Filter" class="button-new" style="margin-top:15px;" onclick="">添加待验证URL</button></h3>
+    <table id="mytable">
         <thead>
         <th>ID</th>
         <th>影片名</th>
-        <th>URL</th>
-        <th>HOSTURL</th>
+        <th>视频源</th>
+        <th>播放网页</th>
         <th>CONTENTID</th>
         </thead>
         <tbody id="test">
         </tbody>
     </table>
-    <div class="intrduction">
-        影片介绍
-    </div>
 </body>
 </html>
