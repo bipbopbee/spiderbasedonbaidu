@@ -53,6 +53,13 @@
                 $('#num').append(collection.length)
                 $("#test").html("");
                 source.setAttribute('src', collection[1])
+                if (collection[1].indexOf('m3u8') != -1){
+                    source.setAttribute('type', 'application/x-mpegURL');
+                }
+
+                if (collection[1].indexOf('mp4') != -1){
+                    source.setAttribute('type', 'video/mp4');
+                }
                     //alert(obj.data[i][2])
                 str1 = "<tr>" + 
                         "<td>" + collection[0] + "</td>" +
