@@ -2,7 +2,8 @@
 import requests
 import os
 import time
-BASE_URL = "http://39.97.164.155/api/v1"
+#BASE_URL = "http://39.97.164.155/api/v1"
+BASE_URL = "http://39.97.252.185/api/v1"
 """
 用户操作定义
 """
