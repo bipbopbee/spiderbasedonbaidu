@@ -11,6 +11,7 @@ import json
 import pymysql
 import time
 import uuid as uuidsed
+import platform
 headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
 conn = pymysql.connect(
     host = '127.0.0.1',user = 'root',passwd = '123456',
@@ -20,12 +21,14 @@ conn = pymysql.connect(
 )
 cursor = conn.cursor()
 url = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
+hosturl = "www.baidu.com"
 name = "tmp.mp4"
 #ffmpeg -i "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8" -vcodec copy -acodec copy -absf aac_adtstoasc output.mp4
 def threading_jobquey(hosturl, detailurl, headers, jobid, desc72file):
     while True:
         try:
             statusstr = queryjobstatus(jobid, headers = headers)
+            print statusstr
         except requests.exceptions.ConnectionError:
             print "error"
             return
@@ -76,36 +79,44 @@ def fingerprint_query(hosturl, detailurl, desc72file, headers):
     pass
 
 def desc72_generate(filename):
-    try:
-        command = "desc_tools " +  filename + " " + filename + ".desc72"
-        outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
-        fileno = outtemp.fileno()
-        fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
-        fd.communicate()
-        # outtemp.seek(0)
-        # lines = outtemp.readlines()
-        # print lines
-    except Exception, e:
-        print traceback.format_exc()
-    finally:
-        if outtemp:
-            outtemp.close()
+    command = "desc_tools " +  filename + " " + filename + ".desc72"
+    sysstr = platform.system()
+    if sysstr == 'Windows':
+        try:
+            outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
+            fileno = outtemp.fileno()
+            fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
+            fd.communicate()
+            # outtemp.seek(0)
+            # lines = outtemp.readlines()
+            # print lines
+        except Exception, e:
+            print traceback.format_exc()
+        finally:
+            if outtemp:
+                outtemp.close()
+    if sysstr == 'Linux':
+        os.system(command)
 
 def thread_download(detailurl, url, uuid):
-    try:
-        command = "ffmpeg -i " + url + " -vcodec copy -acodec copy -absf aac_adtstoasc " + uuid + ".mp4"
-        outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
-        fileno = outtemp.fileno()
-        fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
-        fd.communicate()
-        #outtemp.seek(0)
-        #lines = outtemp.readlines()
-        #print linesse
-    except Exception, e:
-        print traceback.format_exc()
-    finally:
-        if outtemp:
-            outtemp.close()
+    command = "ffmpeg -i " + url + " -vcodec copy -acodec copy -absf aac_adtstoasc " + uuid + ".mp4"
+    sysstr = platform.system()
+    if sysstr == 'Windows':
+        try:          
+            outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
+            fileno = outtemp.fileno()
+            fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
+            fd.communicate()
+            #outtemp.seek(0)
+            #lines = outtemp.readlines()
+            #print linesse
+        except Exception, e:
+            print traceback.format_exc()
+        finally:
+            if outtemp:
+                outtemp.close()
+    if sysstr == 'Linux':
+        os.system(command)
 
     if os.path.exists(uuid + ".mp4"):
         desc72_generate(uuid + ".mp4")
@@ -113,14 +124,14 @@ def thread_download(detailurl, url, uuid):
         fingerprint_query(detailurl, url,  uuid + ".mp4" + ".desc72", headers)
 
 if __name__ == "__main__":
-    uuid = uuidsed.uuid1()
-    print uuid
+    # uuid = uuidsed.uuid1()
+    # print uuid
     # return
     # nowtime = str(datetime.datetime.now().microsecond)
     # print nowtime
     # detailurl = 'http://www.bilibili.com/video/av20169226?from=search'
     # videourl = 'https://api.bilibili.com/playurl?callback=callbackfunction&aid=51585747&page=1&platform=html5&quality=1&vtype=mp4&type=jsonp'
-    # t = threading.Thread(target=thread_download, args=(detailurl, videourl, nowtime))
+    # t = threading.Thread(target=thread_download, args=(hosturl, url, str(uuid)))
     # t.start()
-    # #fingerprint_query("www.baidu.com", url, "21000.mp4.desc72", headers)
+    fingerprint_query("www.baidu.com", url, "spiderman3.mkv.desc72", headers)
     # pass
