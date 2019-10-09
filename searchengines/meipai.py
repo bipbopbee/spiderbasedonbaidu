@@ -133,7 +133,7 @@ def getrealvideourl(detailurl):
         base64str = objSoup.find_all('span', class_ = 'detail-share none dbl pr cp')[0].get('data-video')
     
     videourl = js2python(base64str)
-    return videourl
+    return "https:" + videourl
 
 def start_search(keyword):
     global num
