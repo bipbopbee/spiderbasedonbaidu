@@ -13,7 +13,7 @@ from database.searchenginedbHelper import *
 dbhelper = mySqlHelper()
 dbOperator = searchenginedbHelper()
 
-thread_num = 10
+thread_num = 20
 
 #     table:
 #     keyword:
