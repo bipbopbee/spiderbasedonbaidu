@@ -98,8 +98,11 @@ def getrealvideourl_1(detailurl):
     url = "https://www.administratorv.com/youku/index.php?url=" + detailurl
     data = requests.get(url).text
     filter = re.compile('url=(.*?)\'.split')
-    videourl = filter.findall(data)[0]
-    return videourl
+    if len(filter.findall(data)) > 0:
+        videourl = filter.findall(data)[0]
+        return videourl
+    else:
+        return ''
 def getrealvideourl(detailurl):
     print detailurl
     pre_url = "https://www.administratorv.com/youku/index.php?url=" + detailurl
@@ -137,7 +140,8 @@ def getrealvideourl(detailurl):
         if videourl.find(".m3u8") != -1:
             return videourl
         videourl = unquote(unquote(unquote(base64.b64decode(base64videourl)))[3:])
-        videourl =  videourl.split("url=")[1]
+        if videourl.find('url=') != -1:
+            videourl =  videourl.split("url=")[1]
         return videourl
     else:
         return detailurl
