@@ -114,8 +114,11 @@ def getrealvideourl_1(detailurl):
     url = "https://www.administratorv.com/qqvod/index.php?url=" + detailurl
     data = requests.get(url).text
     filter = re.compile('url=(.*?)\'.split')
-    videourl = filter.findall(data)[0]
-    return videourl
+    if len(filter.findall(data)) > 0:
+        videourl = filter.findall(data)[0]
+        return videourl
+    else:
+        return ''
 
 def getrealvideourl(detailurl):
     print detailurl
