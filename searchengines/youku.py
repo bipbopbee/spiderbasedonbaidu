@@ -120,8 +120,10 @@ def getrealvideourl(detailurl):
          'type':'',
          'ios':''
     }
-
-    res = requests.post('https://www.administratorm.com/ADMIN/api.php', data=data)
+    headers = {
+        'Referer': target_url
+    }
+    res = requests.post('https://www.administratorm.com/ADMIN/api.php', data=data, headers=headers)
     print res.text
 
     if json.loads(res.text).has_key('code'):

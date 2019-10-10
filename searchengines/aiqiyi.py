@@ -123,8 +123,11 @@ def getrealvideourl(detailurl):
          'other':'',
          'ios':''
     }
+    headers = {
+        'Referer': target_url
+    }
 
-    res = requests.post('https://www.administratorm.com/ADMIN/api.php', data=data)
+    res = requests.post('https://www.administratorm.com/ADMIN/api.php', data=data, headers=headers)
     print res.text
 
     if int(json.loads(res.text)['code']) == 404:
@@ -194,7 +197,8 @@ def main(argv):
         if nexturl == "":
             break
 if __name__ == '__main__':
-    print getrealvideourl('http://so.iqiyi.com/links/qcAdm6fzqd2Da5AHK1fa8AjE_pjgrwo30uShwvURIkLJ0Ni0R408WwrZ4x5P4VmPz-C4MMuvGYwiF-rMlitQfg==')
-    print getrealvideourl_1('http://so.iqiyi.com/links/qcAdm6fzqd2Da5AHK1fa8AjE_pjgrwo30uShwvURIkLJ0Ni0R408WwrZ4x5P4VmPz-C4MMuvGYwiF-rMlitQfg==')
+    #http://www.wmxz.wang/video.php?url=http://so.iqiyi.com/links/qcAdm6fzqd2Da5AHK1fa8AjE_pjgrwo30uShwvURIkLJ0Ni0R408WwrZ4x5P4VmPz-C4MMuvGYwiF-rMlitQfg==
+    #print getrealvideourl('http://so.iqiyi.com/links/qcAdm6fzqd2Da5AHK1fa8AjE_pjgrwo30uShwvURIkLJ0Ni0R408WwrZ4x5P4VmPz-C4MMuvGYwiF-rMlitQfg==')
+    #print getrealvideourl_1('http://so.iqiyi.com/links/qcAdm6fzqd2Da5AHK1fa8AjE_pjgrwo30uShwvURIkLJ0Ni0R408WwrZ4x5P4VmPz-C4MMuvGYwiF-rMlitQfg==')
     #start_search('钢铁侠'.encode('gbk'))
-    #main(sys.argv)
+    main(sys.argv)
