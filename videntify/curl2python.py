@@ -156,7 +156,8 @@ def asyncquerylocalfile(filepath, headers):
     if os.path.isfile(filepath):
         file = open(filepath, 'rb')
         payload = {'file': file}
-        res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, files = payload)
+        data = {'include_locations':True}
+        res = requests.post(BASE_URL + ACTION_QUERY_ASYNC, headers = headers, files = payload, data=data)
         return res.text
 def queryurl(url, headers):
     payload = {'download_url': url}
