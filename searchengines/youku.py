@@ -136,6 +136,9 @@ def getrealvideourl(detailurl):
             return json.loads(res.text)['url']
         base64videourl = json.loads(res.text)['url']
         print base64videourl
+        if base64videourl.find("http") != -1:
+            return base64videourl
+
         videourl = base64.b64decode(base64videourl)[3:]
         if videourl.find(".m3u8") != -1:
             return videourl
