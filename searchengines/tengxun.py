@@ -157,11 +157,18 @@ def getrealvideourl(detailurl):
         'Referer': target_url
     }
 
+    if lasturl.find('url=') != -1:
+        lasturl = lasturl.replace("%3A", ':').replace("%2F", "/")
+        lasturl =  lasturl.split("url=")[1]
+        return lasturl
     res = requests.get(lasturl,headers = headers)
     jsonStr = json.loads(res.text)
 
-    vlJson = json.loads(jsonStr['vinfo'])['vl']
-   
+    vlJson = json.loads(jsonStr['vinfo'])
+    if vlJson.has_key('vl'):
+        vlJson = vlJson['vl']
+    else:
+        return lasturl
     videourl = ''
     videourl = vlJson['vi'][0]['ul']['ui'][0]['url'] + vlJson['vi'][0]['fn'] + "?vkey=" + vlJson['vi'][0]['fvkey']
 
@@ -220,3 +227,4 @@ def main(argv):
 
 if __name__ == '__main__':
     main(sys.argv)
+    #print getrealvideourl('https://v.qq.com/x/page/c0868prnh55.html')
