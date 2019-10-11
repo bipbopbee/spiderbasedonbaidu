@@ -68,7 +68,7 @@ def resolvepagedata(data, keyword):
         title = videoList[i].get('data-searchpingback-albumname')
         upname = ""
         videourl = getrealvideourl(detailurl)
-        print title
+        #print title
         if title is None:
             continue
         insert(keyword, title, detailurl, videourl, upname)
@@ -136,11 +136,13 @@ def getrealvideourl(detailurl):
         return json.loads(res.text)['url']
     base64videourl = json.loads(res.text)['url']
     print base64videourl
+    if base64videourl.find("http") != -1:
+        return base64videourl
 
     videourl = base64.b64decode(base64videourl).replace("%3A", ':').replace("%2F", "/").replace("url=", "")
-    videourl = "http" + videourl.split("http")[1]
-    print videourl
-
+    if len(videourl.split("http")) == 2:
+        videourl = "http" + videourl.split("http")[1]
+        print videourl
     return videourl
 
 
