@@ -115,6 +115,10 @@ def getrealvideourl(detailurl):
     referer = filter.findall(data)[0]
     print referer
 
+    filter = re.compile('post(.*?),')
+    interfaceapi = filter.findall(data)[0]
+    interfaceapi = interfaceapi.split('"')[1]
+
     data = {
          'url':detailurl,
          'referer':referer,
@@ -126,7 +130,7 @@ def getrealvideourl(detailurl):
     headers = {
         'Referer': target_url
     }
-    res = requests.post('https://www.administratorm.com/ADMIN/api.php', data=data, headers=headers)
+    res = requests.post('https://www.administratorm.com/ADMIN/' + interfaceapi, data=data, headers=headers)
     print res.text
 
     if json.loads(res.text).has_key('code'):
@@ -224,5 +228,5 @@ def main(argv):
         if nexturl == "":
             break
 if __name__ == '__main__':
-    start_search('钢铁侠'.encode('gbk'))
-    #main(sys.argv)
+    #start_search('钢铁侠'.encode('gbk'))
+    main(sys.argv)

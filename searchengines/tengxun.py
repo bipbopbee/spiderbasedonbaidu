@@ -132,6 +132,10 @@ def getrealvideourl(detailurl):
     filter = re.compile('referer\':\'(.*?)\',\'ref')
     referer = filter.findall(data)[0]
 
+    filter = re.compile('post(.*?),')
+    interfaceapi = filter.findall(data)[0]
+    interfaceapi = interfaceapi.split('"')[1]
+
     data = {
          'url':detailurl,
          'referer':referer,
@@ -144,7 +148,7 @@ def getrealvideourl(detailurl):
     headers = {
         'Referer': target_url
     }
-    res = requests.post('https://www.administratorm.com/ADMIN/api.php', data=data, headers=headers)
+    res = requests.post('https://www.administratorm.com/ADMIN/' + interfaceapi, data=data, headers=headers)
 
     if int(json.loads(res.text)['code']) == 404:
         return json.loads(res.text)['domain']
