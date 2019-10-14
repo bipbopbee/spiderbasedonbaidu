@@ -26,7 +26,7 @@ def thread_function(keystr):
     while True:
         value = rpop(keystr)
         if value == None:
-            time.sleep(5)
+            #time.sleep(5)
             continue
         data = json.loads(value)
         print data
