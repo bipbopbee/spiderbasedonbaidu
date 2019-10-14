@@ -9,16 +9,17 @@ import sys
 sys.path.append("..")
 from videntify.curl2python import *
 from searchengines.searchengine import *
+from database.config import *
 import threading
 import pymysql
 #from scrapy.crawler import CrawlerProcess
 #from CopyrightObserver.CopyrightObserver.spiders.VideoObserver import VideoobserverSpider
-conn = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = '123456',
-    port = 3306,db = 'videoright',charset = 'utf8'
-    #port必须写int类型
-    #charset必须写utf8，不能写utf-8
-)
+# conn = pymysql.connect(
+#     host = '127.0.0.1',user = 'root',passwd = '123456',
+#     port = 3306,db = 'videoright',charset = 'utf8'
+#     #port必须写int类型
+#     #charset必须写utf8，不能写utf-8
+# )
 content_id = ""
 gerror = {"message":"success"}
 cursor = conn.cursor()
