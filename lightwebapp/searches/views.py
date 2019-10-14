@@ -8,16 +8,18 @@ import sys
 sys.path.append("../..")
 from videntify.curl2python import *
 from searchengines.searchstartup import *
+from database.config import *
 import threading
 import json
 import time
 import pymysql
-conn = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = '123456',
-    port = 3306,db = 'videoright',charset = 'utf8'
-    #port必须写int类型
-    #charset必须写utf8，不能写utf-8
-)
+# conn = pymysql.connect(
+#     host = '127.0.0.1',user = 'root',passwd = '123456',
+#     port = 3306,db = 'videoright',charset = 'utf8'
+#     #port必须写int类型
+#     #charset必须写utf8，不能写utf-8
+# )
+conn = pool.connection()
 cursor = conn.cursor()
 from . import searches_home
 @searches_home.route("/getall", methods=['POST','GET'])

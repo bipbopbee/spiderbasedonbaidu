@@ -7,18 +7,21 @@ import tempfile
 import sys
 import threading
 from curl2python import *
+sys.path.append("..")
+from database.config import *
 import json
 import pymysql
 import time
 import uuid as uuidsed
 import platform
 headers = {"Authorization":"LWtrKgMmLIeAWyyDUlLa"}
-conn = pymysql.connect(
-    host = '127.0.0.1',user = 'root',passwd = '123456',
-    port = 3306,db = 'videoright',charset = 'utf8'
-    #port必须写int类型
-    #charset必须写utf8，不能写utf-8
-)
+# conn = pymysql.connect(
+#     host = '127.0.0.1',user = 'root',passwd = '123456',
+#     port = 3306,db = 'videoright',charset = 'utf8'
+#     #port必须写int类型
+#     #charset必须写utf8，不能写utf-8
+# )
+conn = pool.connection()
 cursor = conn.cursor()
 url = "https://zy.zxziyuan-yun.com/20180107/hv8I41wD/index.m3u8"
 hosturl = "www.baidu.com"
@@ -133,5 +136,5 @@ if __name__ == "__main__":
     # videourl = 'https://api.bilibili.com/playurl?callback=callbackfunction&aid=51585747&page=1&platform=html5&quality=1&vtype=mp4&type=jsonp'
     # t = threading.Thread(target=thread_download, args=(hosturl, url, str(uuid)))
     # t.start()
-    fingerprint_query("www.baidu.com", url, "spiderman3.mkv.desc72", headers)
+    fingerprint_query("www.baidu.com", url, "rionman1.mkv.desc72", headers)
     # pass

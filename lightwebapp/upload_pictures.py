@@ -22,6 +22,7 @@ import pymysql
 # )
 content_id = ""
 gerror = {"message":"success"}
+conn = pool.connection()
 cursor = conn.cursor()
 #设置允许的文件格式
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'PNG', 'bmp', 'mp4', 'desc72'])
