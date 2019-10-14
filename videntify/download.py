@@ -119,7 +119,7 @@ def thread_download(detailurl, url, uuid):
             if outtemp:
                 outtemp.close()
     if sysstr == 'Linux':
-        os.system(command)
+        os.system('nohup ' + command + " >/dev/null 2>&1")
 
     if os.path.exists(uuid + ".mp4"):
         desc72_generate(uuid + ".mp4")
