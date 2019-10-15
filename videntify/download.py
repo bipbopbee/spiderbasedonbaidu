@@ -84,42 +84,43 @@ def fingerprint_query(hosturl, detailurl, desc72file, headers):
 def desc72_generate(filename):
     command = "desc_tools " +  filename + " " + filename + ".desc72"
     sysstr = platform.system()
-    if sysstr == 'Windows':
-        try:
-            outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
-            fileno = outtemp.fileno()
+    try:
+        outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
+        fileno = outtemp.fileno()
+        if sysstr == 'Windows':
             fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
-            fd.communicate()
+        else:
+            fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=True)
+        fd.communicate()
             # outtemp.seek(0)
             # lines = outtemp.readlines()
             # print lines
-        except Exception, e:
-            print traceback.format_exc()
-        finally:
-            if outtemp:
-                outtemp.close()
-    if sysstr == 'Linux':
-        os.system(command)
+    except Exception, e:
+        print traceback.format_exc()
+    finally:
+        if outtemp:
+            outtemp.close()
+
 
 def thread_download(detailurl, url, uuid):
     command = "ffmpeg -i " + url + " -vcodec copy -acodec copy -absf aac_adtstoasc " + uuid + ".mp4"
     sysstr = platform.system()
-    if sysstr == 'Windows':
-        try:          
-            outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
-            fileno = outtemp.fileno()
+    try:
+        outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
+        fileno = outtemp.fileno()
+        if sysstr == 'Windows':
             fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=False)
-            fd.communicate()
+        else:
+            fd = subprocess.Popen(command, stdout=fileno, stderr=fileno, shell=True)
+        fd.communicate()
             #outtemp.seek(0)
             #lines = outtemp.readlines()
             #print linesse
-        except Exception, e:
-            print traceback.format_exc()
-        finally:
-            if outtemp:
-                outtemp.close()
-    if sysstr == 'Linux':
-        os.system('nohup ' + command + " >/dev/null 2>&1")
+    except Exception, e:
+        print traceback.format_exc()
+    finally:
+        if outtemp:
+            outtemp.close()
 
     if os.path.exists(uuid + ".mp4"):
         desc72_generate(uuid + ".mp4")
@@ -127,14 +128,14 @@ def thread_download(detailurl, url, uuid):
         fingerprint_query(detailurl, url,  uuid + ".mp4" + ".desc72", headers)
 
 if __name__ == "__main__":
-    # uuid = uuidsed.uuid1()
-    # print uuid
+    uuid = uuidsed.uuid1()
+    print uuid
     # return
     # nowtime = str(datetime.datetime.now().microsecond)
     # print nowtime
-    # detailurl = 'http://www.bilibili.com/video/av20169226?from=search'
-    # videourl = 'https://api.bilibili.com/playurl?callback=callbackfunction&aid=51585747&page=1&platform=html5&quality=1&vtype=mp4&type=jsonp'
-    # t = threading.Thread(target=thread_download, args=(hosturl, url, str(uuid)))
-    # t.start()
-    fingerprint_query("www.baidu.com", url, "rionman1.mkv.desc72", headers)
+    detailurl = 'https://www.meipai.com//media/1133082612'
+    videourl = 'https://mvvideo10.meitudata.com/5d3ae8205d546gsezfbop15152_H264_1_a099c2aebd96e0.mp4'
+    t = threading.Thread(target=thread_download, args=(detailurl, videourl, str(uuid)))
+    t.start()
+    #fingerprint_query("www.baidu.com", url, "rionman1.mkv.desc72", headers)
     # pass
