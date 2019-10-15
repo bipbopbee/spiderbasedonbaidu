@@ -1,4 +1,4 @@
-service mysqld start
-gunicorn -w 5 -b 0.0.0.0:5000 --threads 6 upload_pictures:app
-redis-server
+service mysqld start &
+gunicorn -w 5 -b 0.0.0.0:5000 --threads 1 upload_pictures:app &
+redis-server &
 nohup python mainloop.py > /dev/null 2>&1 &
