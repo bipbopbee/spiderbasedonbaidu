@@ -82,7 +82,7 @@ def fingerprint_query(hosturl, detailurl, desc72file, headers):
     pass
 
 def desc72_generate(filename):
-    command = "desc_tools " +  filename + " " + filename + ".desc72"
+    command = "desc_tools --quick " +  filename + " " + filename + ".desc72"
     sysstr = platform.system()
     try:
         outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
@@ -103,7 +103,7 @@ def desc72_generate(filename):
 
 
 def thread_download(detailurl, url, uuid):
-    command = "ffmpeg -i " + url + " -vcodec copy -acodec copy -absf aac_adtstoasc " + uuid + ".mp4"
+    command = "ffmpeg -i " + url + " -vcodec copy -an -absf aac_adtstoasc " + uuid + ".mp4"
     sysstr = platform.system()
     try:
         outtemp =tempfile.SpooledTemporaryFile(bufsize = 100 * 1000)
