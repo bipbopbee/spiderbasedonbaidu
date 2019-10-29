@@ -43,8 +43,8 @@ def insert(keyword, title, detailurl, videourl, upname):
            'videourl':videourl,
            'upname':upname 
     }
-
-    lpush('list', json.dumps(value))    
+    print requests.post('http://118.31.127.81:5000/appium/upload', value)
+    #lpush('list', json.dumps(value))
     pass
 
 num = 1
@@ -231,4 +231,4 @@ def main(argv):
 
 if __name__ == '__main__':
     main(sys.argv)
-    #print getrealvideourl('https://v.qq.com/x/page/c0868prnh55.html')
+    #print getrealvideourl('https://v.qq.com/x/page/s0865l5taij.html')
