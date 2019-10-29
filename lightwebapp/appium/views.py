@@ -32,7 +32,7 @@ def upload():
 
         value = {
            'table':table,
-           'keyword':keyword.encode('gbk'),
+           'keyword':keyword,
            'title':title,
            'detailurl':detailurl,
            'videourl':videourl,
