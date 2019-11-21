@@ -21,7 +21,7 @@ thread_num = 20
 #     detailurl:
 #     videourl:
 #     upname:
-
+#     apitoken:
 def thread_function(keystr):
     while True:
         value = rpop(keystr)
@@ -32,9 +32,10 @@ def thread_function(keystr):
         print data
         hosturl = data['detailurl']
         videourl = data['videourl']
+        apitoken = data['apitoken']
         #nowtime = str(datetime.datetime.now().microsecond)
         filename = str(uuidsed.uuid1())
-        thread_download(hosturl, videourl, filename)
+        thread_download(hosturl, videourl, filename, apitoken)
     pass
 
 if __name__ == '__main__':

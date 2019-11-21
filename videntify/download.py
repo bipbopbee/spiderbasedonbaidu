@@ -102,7 +102,8 @@ def desc72_generate(filename):
             outtemp.close()
 
 
-def thread_download(detailurl, url, uuid):
+def thread_download(detailurl, url, uuid, apitoken):
+    headers = {"Authorization":apitoken}
     command = "ffmpeg -i " + url + " -vcodec copy -an -absf aac_adtstoasc " + uuid + ".mp4"
     sysstr = platform.system()
     try:
