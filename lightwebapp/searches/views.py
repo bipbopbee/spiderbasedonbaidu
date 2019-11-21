@@ -26,8 +26,10 @@ from . import searches_home
 def getall():
     cursor = conn.cursor()
     print "getall"
-    cursor.execute("select * from searches")
+    print "select * from searches where apitoken = \'" + session['apitoken'] + "\';"
+    cursor.execute("select * from searches where apitoken = \'" + session['apitoken'] + "\';")
     collections = cursor.fetchall()
+    print collections
     cursor.close()
     print collections
     t = {}
@@ -70,24 +72,24 @@ def searchbykeyword():
     if request.method == 'POST':
         keyword = request.form.get('keyword')
         print keyword
-        t = threading.Thread(target = startsupall, args=(keyword.encode('gbk'),))
+        t = threading.Thread(target = startsupall, args=(keyword.encode('gbk'),session['apitoken']))
         t.start()
 
-    sql = "select * from searches where keyword = \'" + keyword + "\';"
+    sql = "select * from searches where keyword = \'" + keyword + "\' and apitoken = \'" + session['apitoken'] + "\'"
     cursor.execute(sql)
     cursor.close
     row = cursor.fetchone()
     id = row[0]
     num = int(row[5])
     num = num + 1
-    sql = "update searches set searchnums=\'" + str(num) + "\' where id = " + str(id)
+    sql = "update searches set searchnums=\'" + str(num) + "\' where id = " + str(id) + " and apitoken = \'" + session['apitoken'] + "\'"
     cursor = conn.cursor()
     cursor.execute(sql)
     conn.commit()
     cursor.close()
 
     cursor = conn.cursor()
-    sql = "select * from searchengine where keyword = \'" + keyword + "\';"
+    sql = "select * from searchengine where keyword = \'" + keyword + "\' and apitoken = \'" + session['apitoken'] + "\'"
     cursor.execute(sql)
     collections = cursor.fetchall()
     cursor.close()
@@ -114,7 +116,7 @@ def getsearchengine():
     if request.method == 'POST':
         keyword = request.form.get('keyword')
         print keyword
-    sql = "select * from searchengine where keyword = \'" + keyword + "\';"
+    sql = "select * from searchengine where keyword = \'" + keyword + "\' and apitoken = \'" + session['apitoken'] + "\'"
     cursor.execute(sql)
     row = cursor.fetchone()
     cursor.close()
