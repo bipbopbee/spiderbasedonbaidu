@@ -28,9 +28,10 @@ from database.searchenginedbHelper import *
 from database.opredis import *
 dbhelper = mySqlHelper()
 dbOperator = searchenginedbHelper()
-def insert(keyword, title, detailurl, videourl, upname):
-    sql = "insert into aiqiyi (keyword, title, detailurl, videourl, upname) values (%s, %s, %s, %s,%s)"
-    params = (keyword.decode('gbk'), title, detailurl, videourl, upname)
+test_apitoken = ""
+def insert(keyword, title, detailurl, videourl, upname, apitoken):
+    sql = "insert ignore into aiqiyi (keyword, title, detailurl, videourl, upname, apitoken) values (%s, %s, %s, %s,%s,%s)"
+    params = (keyword.decode('gbk'), title, detailurl, videourl, upname, apitoken)
     print params
     dbhelper.insert(sql, params)
 
@@ -40,7 +41,8 @@ def insert(keyword, title, detailurl, videourl, upname):
            'title':title,
            'detailurl':detailurl,
            'videourl':videourl,
-           'upname':upname 
+           'upname':upname,
+           'apitoken':apitoken
     }
 
     lpush('list', json.dumps(value)) 
@@ -52,10 +54,10 @@ def getsearchpagebykeyword(url, keyword):
     print strFullurl
     return geturlpage(strFullurl)
 
-def resolvepagedata(data, keyword):
+def resolvepagedata(data, keyword, apitoken):
     global num
     num = int(num) + 1
-    dbOperator.updateSearchnums((str(num), keyword.decode('gbk'), '爱奇艺'))
+    dbOperator.updateSearchnums((str(num), keyword.decode('gbk'), '爱奇艺', apitoken))
 
     arrList = []
     strRetnexturl = ''
@@ -71,7 +73,7 @@ def resolvepagedata(data, keyword):
         #print title
         if title is None:
             continue
-        insert(keyword, title, detailurl, videourl, upname)
+        insert(keyword, title, detailurl, videourl, upname, apitoken)
 
 
     intentList = objSoup.find_all('li', class_ = 'intent-item-twoline')
@@ -84,7 +86,7 @@ def resolvepagedata(data, keyword):
         print title
         if title is None:
             continue
-        insert(keyword, title, detailurl, videourl, upname)
+        insert(keyword, title, detailurl, videourl, upname, apitoken)
 
     nextList = objSoup.find_all('a', class_ = 'a1')
     nexturl = ''
@@ -155,22 +157,22 @@ def geturlpage(url):
     res = requests.get(url, headers = headers)
     return res.text
 
-def start_search(keyword):
+def start_search(keyword, apitoken):
     global num
-    data = dbOperator.selectOne((keyword.decode('gbk'), '爱奇艺'))
+    data = dbOperator.selectOne((keyword.decode('gbk'), '爱奇艺', apitoken))
     dt = datetime.datetime.now()
     timestr = dt.strftime( '%Y-%m-%d %H:%M:%S' )
     print timestr
 
     if data == None:
-        dbOperator.insert(('', '爱奇艺', keyword.decode('gbk'), 0, timestr))
+        dbOperator.insert(('', '爱奇艺', keyword.decode('gbk'), 0, timestr, apitoken))
     else:
-        dbOperator.updateSearchtime((timestr, keyword.decode('gbk'), '爱奇艺'))
+        dbOperator.updateSearchtime((timestr, keyword.decode('gbk'), '爱奇艺', apitoken))
         num = data[3]
     url = 'https://so.iqiyi.com/so/q_'
     data = getsearchpagebykeyword(url, keyword)
     while True:
-        nexturl = resolvepagedata(data, keyword)
+        nexturl = resolvepagedata(data, keyword, apitoken)
         if nexturl == "":
             break
         data = geturlpage("https://so.iqiyi.com" + nexturl)
@@ -196,7 +198,7 @@ def main(argv):
 
 
     while True:
-        nexturl = resolvepagedata(data, keyword)
+        nexturl = resolvepagedata(data, keyword, test_apitoken)
         data = geturlpage("https://so.iqiyi.com" + nexturl)
         if nexturl == "":
             break

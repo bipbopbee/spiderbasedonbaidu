@@ -25,9 +25,10 @@ from database.searchenginedbHelper import *
 from database.opredis import *
 dbhelper = mySqlHelper()
 dbOperator = searchenginedbHelper()
-def insert(keyword, title, detailurl, videourl, upname):
-    sql = "insert into bilibili (keyword, title, detailurl, videourl, upname) values (%s, %s, %s, %s,%s)"
-    params = (keyword.decode('gbk'), title, detailurl, videourl, upname)
+test_apitoken = ""
+def insert(keyword, title, detailurl, videourl, upname, apitoken):
+    sql = "insert ignore into bilibili (keyword, title, detailurl, videourl, upname, apitoken) values (%s, %s, %s, %s,%s,%s)"
+    params = (keyword.decode('gbk'), title, detailurl, videourl, upname, apitoken)
     print params
     dbhelper.insert(sql, params)
     value = {
@@ -36,7 +37,8 @@ def insert(keyword, title, detailurl, videourl, upname):
            'title':title,
            'detailurl':detailurl,
            'videourl':videourl,
-           'upname':upname 
+           'upname':upname,
+           'apitoken':apitoken
     }
 
     lpush('list', json.dumps(value))
@@ -73,10 +75,10 @@ def geturlpage(url):
     return strData
 
 #@return 返回视频网址list和下一页网址
-def resolvepagedata(data, keyword):
+def resolvepagedata(data, keyword, apitoken):
     global num
     num = int(num) + 1
-    dbOperator.updateSearchnums((str(num), keyword.decode('gbk'), '哔哩哔哩'))
+    dbOperator.updateSearchnums((str(num), keyword.decode('gbk'), '哔哩哔哩', apitoken))
 
     arrList = []
     strRetnexturl = ''
@@ -88,11 +90,11 @@ def resolvepagedata(data, keyword):
     filter = re.compile('>(.*?)<')
     sumstr = filter.findall(str(tmpnexturl))[0].replace('\\\\n', "").strip()
     sum = int(sumstr)
-    resolvedetaildata(data, keyword)
+    resolvedetaildata(data, keyword, apitoken)
     return sum
 
 #解析视频播放网页
-def resolvedetaildata(data, keyword):
+def resolvedetaildata(data, keyword, apitoken):
     objSoup = BeautifulSoup(data, 'lxml')
     videolist = objSoup.find_all('li', class_ = 'video-item matrix')
     upnamelist = objSoup.find_all('a', class_ = 'up-name')
@@ -106,7 +108,7 @@ def resolvedetaildata(data, keyword):
         videourl = getrealvideourl(detailurl)
         detailurl = "http:" + str(objSoup.find(name='a').get('href'))
         title = str(objSoup.find(name='a').get('title'))
-        insert(keyword, title, detailurl, videourl, upname)
+        insert(keyword, title, detailurl, videourl, upname, apitoken)
 
     pass
 #获取视频实际播放地址//www.bilibili.com/video/av10634999?from=search
@@ -131,24 +133,24 @@ def getrealvideourl(detailurl):
     print res.text
     return videourl
 
-def start_search(keyword):
+def start_search(keyword, apitoken):
     global num
-    data = dbOperator.selectOne((keyword.decode('gbk'), '哔哩哔哩'))
+    data = dbOperator.selectOne((keyword.decode('gbk'), '哔哩哔哩', apitoken))
     dt = datetime.datetime.now()
     timestr = dt.strftime( '%Y-%m-%d %H:%M:%S' )
     print timestr
 
     if data == None:
-        dbOperator.insert(('', '哔哩哔哩', keyword.decode('gbk'), 0, timestr))
+        dbOperator.insert(('', '哔哩哔哩', keyword.decode('gbk'), 0, timestr, apitoken))
     else:
-        dbOperator.updateSearchtime((timestr, keyword.decode('gbk'), '哔哩哔哩'))
+        dbOperator.updateSearchtime((timestr, keyword.decode('gbk'), '哔哩哔哩', apitoken))
         num = data[3]
     url = "https://search.bilibili.com/all?"
 
     keyword = keyword.strip()
     data = getsearchpagebykeyword(url, keyword)
 
-    sum = resolvepagedata(data,keyword)
+    sum = resolvepagedata(data,keyword, apitoken)
     for i in range(sum + 1):
         if i == 0 or i == 1:
             continue
@@ -158,7 +160,7 @@ def start_search(keyword):
         strFullurl = url + urlkeyword
         print strFullurl
         data = geturlpage(strFullurl)
-        resolvedetaildata(data, keyword)
+        resolvedetaildata(data, keyword, apitoken)
 
 def main(argv):
     argc = len(argv)
@@ -175,7 +177,7 @@ def main(argv):
     keyword = keyword.strip()
     data = getsearchpagebykeyword(url, keyword)
 
-    sum = resolvepagedata(data, keyword)
+    sum = resolvepagedata(data, keyword, test_apitoken)
     for i in range(sum + 1):
         if i == 0 or i == 1:
             continue
@@ -185,7 +187,7 @@ def main(argv):
         strFullurl = url + urlkeyword
         print strFullurl
         data = geturlpage(strFullurl)
-        resolvedetaildata(data, keyword)
+        resolvedetaildata(data, keyword, test_apitoken)
 if __name__ == '__main__':
     main(sys.argv)
 

@@ -29,9 +29,10 @@ from database.searchenginedbHelper import *
 from database.opredis import *
 dbhelper = mySqlHelper()
 dbOperator = searchenginedbHelper()
-def insert(keyword, title, detailurl, videourl, upname):
-    sql = "insert into tengxun (keyword, title, detailurl, videourl, upname) values (%s, %s, %s, %s,%s)"
-    params = (keyword.decode('gbk'), title, detailurl, videourl, upname)
+test_apitoken = ""
+def insert(keyword, title, detailurl, videourl, upname, apitoken):
+    sql = "insert ignore into tengxun (keyword, title, detailurl, videourl, upname, apitoken) values (%s, %s, %s, %s,%s,%s)"
+    params = (keyword.decode('gbk'), title, detailurl, videourl, upname, apitoken)
     print params
     dbhelper.insert(sql, params)
 
@@ -41,10 +42,11 @@ def insert(keyword, title, detailurl, videourl, upname):
            'title':title,
            'detailurl':detailurl,
            'videourl':videourl,
-           'upname':upname 
+           'upname':upname,
+           'apitoken':apitoken
     }
-    print requests.post('http://118.31.127.81:5000/appium/upload', value)
-    #lpush('list', json.dumps(value))
+    #print requests.post('http://118.31.127.81:5000/appium/upload', value)
+    lpush('list', json.dumps(value))
     pass
 
 num = 1
@@ -68,11 +70,11 @@ def getsearchpagebykeyword(url, keyword):
     return geturlpage(strFullurl)
 
 
-def resolvepagedata(data, keyword):
+def resolvepagedata(data, keyword, apitoken):
     global dbnum
     global num
     dbnum = int(dbnum) + 1
-    dbOperator.updateSearchnums((str(dbnum), keyword.decode('gbk'), '腾讯'))
+    dbOperator.updateSearchnums((str(dbnum), keyword.decode('gbk'), '腾讯', apitoken))
     arrList = []
     strRetnexturl = ''
     objSoup = BeautifulSoup(data, 'html5lib')
@@ -93,7 +95,7 @@ def resolvepagedata(data, keyword):
         print upname
         videourl = getrealvideourl(detailurl)
         print videourl
-        insert(keyword, title, detailurl, videourl, upname)
+        insert(keyword, title, detailurl, videourl, upname, apitoken)
     
     intentList = objSoup.find_all('div', class_ = 'mod_figures mod_figure_v')
     if len(intentList) != 0:
@@ -106,7 +108,7 @@ def resolvepagedata(data, keyword):
             upname = ""
             videourl = getrealvideourl_1(detailurl)
             print videourl
-            insert(keyword, title, detailurl, videourl, upname)
+            insert(keyword, title, detailurl, videourl, upname, apitoken)
 
     num = num + 1
 
@@ -185,23 +187,23 @@ def geturlpage(url):
     res = requests.get(url, headers = headers)
     return res.text
 
-def start_search(keyword):
+def start_search(keyword, apitoken):
     global num
     global dbnum
-    data = dbOperator.selectOne((keyword.decode('gbk'), '腾讯'))
+    data = dbOperator.selectOne((keyword.decode('gbk'), '腾讯', apitoken))
     dt = datetime.datetime.now()
     timestr = dt.strftime( '%Y-%m-%d %H:%M:%S' )
     print timestr
 
     if data == None:
-        dbOperator.insert(('', '腾讯', keyword.decode('gbk'), 0, timestr))
+        dbOperator.insert(('', '腾讯', keyword.decode('gbk'), 0, timestr, apitoken))
     else:
-        dbOperator.updateSearchtime((timestr, keyword.decode('gbk'), '腾讯'))
+        dbOperator.updateSearchtime((timestr, keyword.decode('gbk'), '腾讯', apitoken))
         dbnum = data[3]
     url = "https://v.qq.com/x/search/?ses="
     while True:
         data = getsearchpagebykeyword(url, keyword)
-        resolvepagedata(data, keyword)
+        resolvepagedata(data, keyword, apitoken)
         if num == 20:
             break
         
@@ -225,7 +227,7 @@ def main(argv):
 
     while True:
         data = getsearchpagebykeyword(url, keyword)
-        resolvepagedata(data, keyword)
+        resolvepagedata(data, keyword, test_apitoken)
         if num == 20:
             break
 

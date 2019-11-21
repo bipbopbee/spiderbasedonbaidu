@@ -21,7 +21,7 @@ from bs4 import BeautifulSoup
 import socket
 socket.setdefaulttimeout(10.0)
 from database.opredis import *
-
+test_apitoken = ""
 num = 0
 sys.path.append("..")
 from database.searchenginedbHelper import *
@@ -30,9 +30,9 @@ from database.opredis import *
 
 dbhelper = mySqlHelper()
 dbOperator = searchenginedbHelper()
-def insert(keyword, title, detailurl, videourl, upname):
-    sql = "insert into meipai (keyword, title, detailurl, videourl, upname) values (%s, %s, %s, %s,%s)"
-    params = (keyword.decode('gbk'), title, detailurl, videourl, upname)
+def insert(keyword, title, detailurl, videourl, upname, apitoken):
+    sql = "insert ignore into meipai (keyword, title, detailurl, videourl, upname, apitoken) values (%s, %s, %s, %s,%s,%s)"
+    params = (keyword.decode('gbk'), title, detailurl, videourl, upname, apitoken)
     print params
     dbhelper.insert(sql, params)
 
@@ -42,7 +42,8 @@ def insert(keyword, title, detailurl, videourl, upname):
            'title':title,
            'detailurl':detailurl,
            'videourl':videourl,
-           'upname':upname 
+           'upname':upname,
+           'apitoken':apitoken
     }
 
     lpush('list', json.dumps(value))
@@ -89,10 +90,10 @@ def geturlpage(url):
         print 'timeout'
     return strData
 
-def resolvepagedata(data, keyword):
+def resolvepagedata(data, keyword, apitoken):
     global num
     num = int(num) + 1
-    dbOperator.updateSearchnums((str(num), keyword.decode('gbk'), '美拍'))
+    dbOperator.updateSearchnums((str(num), keyword.decode('gbk'), '美拍', apitoken))
 
     nextpage = ""
     arrList = []
@@ -115,7 +116,7 @@ def resolvepagedata(data, keyword):
         print videourl
         title = detailList[i].get('title')
         upname = upnameList[i].get('title')
-        insert(keyword, title, detailurl, videourl, upname)
+        insert(keyword, title, detailurl, videourl, upname, apitoken)
 
     return nextpage
 
@@ -137,22 +138,22 @@ def getrealvideourl(detailurl):
 
 def start_search(keyword):
     global num
-    data = dbOperator.selectOne((keyword.decode('gbk'), '美拍'))
+    data = dbOperator.selectOne((keyword.decode('gbk'), '美拍', apitoken))
     dt = datetime.datetime.now()
     timestr = dt.strftime( '%Y-%m-%d %H:%M:%S' )
     print timestr
 
     if data == None:
-        dbOperator.insert(('', '美拍', keyword.decode('gbk'), 0, timestr))
+        dbOperator.insert(('', '美拍', keyword.decode('gbk'), 0, timestr, apitoken))
     else:
-        dbOperator.updateSearchtime((timestr, keyword.decode('gbk'), '美拍'))
+        dbOperator.updateSearchtime((timestr, keyword.decode('gbk'), '美拍', apitoken))
         num = data[3]
 
     url = "https://www.meipai.com/search/all?"
 
     data = getsearchpagebykeyword(url, keyword)
     while True:
-        nexturl = resolvepagedata(data, keyword)
+        nexturl = resolvepagedata(data, keyword, apitoken)
         if nexturl == "":
             break
         data = geturlpage("https://www.meipai.com" + nexturl)
@@ -178,7 +179,7 @@ def main(argv):
 
 
     while True:
-        nexturl = resolvepagedata(data, keyword)
+        nexturl = resolvepagedata(data, keyword, test_apitoken)
 
         data = geturlpage("https://www.meipai.com" + nexturl)
         if nexturl == "":
