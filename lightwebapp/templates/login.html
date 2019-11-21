@@ -302,7 +302,7 @@
                     <form action="login">
                         <p class="form"><input type="text" id="user" placeholder="username"></p>
                         <p class="form"><input type="password" id="passwd" placeholder="password"></p>
-                        <p class="form confirm"><input type="password" id="confirm-passwd" placeholder="confirm password"></p>
+                        <p class="form confirm"><input type="text" id="email" placeholder="email"></p>
                         <input type="button" value="Log in" class="btn" onclick="login()" style="margin-right: 20px;">
                         <input type="button" value="Sign in" class="btn" onclick='signin()' id="btn">
                     </form>
@@ -388,6 +388,22 @@
             status[1].style.top = 0
             onoff = !onoff
         } else {
+            let request = new XMLHttpRequest()
+            let url = "register"
+            request.open("post", url, true)
+            let data = new FormData()
+            data.append("user", user.value)
+            data.append("passwd", passwd.value)
+            data.append("email", email.value)
+            request.onreadystatechange = function() {
+                if (this.readyState == 4) {
+                    if (this.responseText == false)
+                        hint()
+                    else
+                        window.location.href = this.responseText;
+                }
+            }
+            request.send(data)
             /*if (!/^[A-Za-z0-9]+$/.test(user.value))
                 hit.innerHTML = "账号只能为英文和数字"
             else if (user.value.length < 6)
