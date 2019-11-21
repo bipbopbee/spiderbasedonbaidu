@@ -26,7 +26,7 @@ from . import validation_home
 @validation_home.route("/getall",methods=['POST', 'GET'])
 def getall():
     
-    sql = "select * from privacy"
+    sql = "select * from privacy where apitoken = \'" + session['apitoken'] + "\'"
     cursor.execute(sql)
     collections = cursor.fetchall()
 
