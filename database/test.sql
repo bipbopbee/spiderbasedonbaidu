@@ -116,3 +116,17 @@ alter table searchengine add column (searchtime char(150));
 alter table privacy add column (hosturl char(150));
 alter table privacy alter column url varchar(1000) NOT NULL;
 insert into privacy (url, rightname, contentid, hosturl) values ('https://api.nxflv.com/data/iqiyi/d3d4412c25630ce642770d51663cd7a3.m3u8', '蜘蛛侠3', '240320','http://www.iqiyi.com/v_19rszmv9hg.html')
+ALTER TABLE bilibili ADD UNIQUE (detailurl);
+ALTER TABLE aiqiyi ADD UNIQUE (detailurl);
+ALTER TABLE meipai ADD UNIQUE (detailurl);
+ALTER TABLE youku ADD UNIQUE (detailurl);
+ALTER TABLE tengxun ADD UNIQUE (detailurl);
+alter table searches add column (contentid int(11));
+alter table privacy add column (apitoken char(150));
+alter table searches add column (apitoken char(150));
+alter table searchengine add column (apitoken char(150));
+alter table aiqiyi add column (apitoken char(150));
+alter table meipai add column (apitoken char(150));
+alter table bilibili add column (apitoken char(150));
+alter table tengxun add column (apitoken char(150));
+alter table youku add column (apitoken char(150));
