@@ -30,6 +30,61 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'PNG', 'bmp', 'mp4', 'desc72'])
  
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+@profile_home.route('/file/upload', methods=['POST'])
+def upload_part():  # 接收前端上传的一个分片
+    task = request.form.get('task_id')  # 获取文件的唯一标识符
+    chunk = request.form.get('chunk', 0)  # 获取该分片在所有分片中的序号
+    filename = '%s%s' % (task, chunk)  # 构造该分片的唯一标识符
+
+    upload_file = request.files['file']
+    upload_file.save('./upload/%s' % filename)  # 保存分片到本地
+    return render_template('upload.html')
+@profile_home.route('/file/merge', methods=['GET'])
+def upload_success():  # 按序读出分片内容，并写入新文件
+    target_filename = request.args.get('filename')  # 获取上传文件的文件名
+    task = request.args.get('task_id')  # 获取文件的唯一标识符
+    videoname = request.args.get('videoname')
+    chunk = 0  # 分片序号
+    with open('./upload/%s' % target_filename, 'wb') as target_file:  # 创建新文件
+        while True:
+            try:
+                filename = './upload/%s%d' % (task, chunk)
+                source_file = open(filename, 'rb')  # 按序打开每个分片
+                target_file.write(source_file.read())  # 读取分片内容写入新文件
+                source_file.close()
+            except IOError as msg:
+                break
+
+            chunk += 1
+            os.remove(filename)  # 删除该分片，节约空间
+
+    absfilename = os.path.abspath('./upload/%s' % target_filename)
+    print(absfilename)
+    #desc72_generate(absfilename)
+    apitoken = session['apitoken'].encode('raw_unicode_escape')
+    headers = {"Authorization":apitoken}
+    print (headers)
+        # res = insertlocalfile(upload_path, headers)
+        # result = json.loads(res.text)
+
+        # if not result['error'] is None:
+        #     error = result['error']['message']
+        # else:
+        #    content_id = result['data']['content']['contend_id']
+    
+    jobidstr = asyncinsertlocalfile(absfilename, headers)
+    jobid = json.loads(jobidstr)['data']['job']['id']
+    email = session['email']
+    t = threading.Thread(target = threading_jobinsert, args=(videoname, headers, jobid,email, apitoken))
+    print(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+    t.start()
+    t.join()
+    print(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+    print ("upload" + content_id)
+    #return content_id + videoname
+    return render_template('profile/upload_ok.html')
+    return render_template('profile/upload_ok.html', userinput=videoname, contentid = content_id, error = gerror['message'], val1=time.time())
+    #return render_template('index.html')
 @profile_home.route("/", methods=['POST', 'GET'])
 def index():
     return "index"
@@ -41,6 +96,10 @@ def deletebyid():
        id = request.form.get('id')
        print id
     sql = "delete from right_tmp where contentid = " + id
+    cursor.execute(sql)
+    conn.commit()
+
+    sql = "delete from searches where contentid = " + id
     cursor.execute(sql)
     conn.commit()
 
@@ -56,7 +115,7 @@ def deletebyid():
 
 @profile_home.route("/getall", methods=['POST', 'GET'])
 def getall():
-    cursor.execute("select *  from right_tmp")
+    cursor.execute("select *  from right_tmp where email = \'" + session['email'] + "\'")
     collections = cursor.fetchall()
     print collections
     t = {}
@@ -114,7 +173,7 @@ def upload():
  
     return render_template('upload.html')
 
-def threading_jobinsert(rightname, headers, jobid):
+def threading_jobinsert(rightname, headers, jobid, email, apitoken):
     global content_id
     while True:
         statusstr = queryjobstatus(jobid, headers = headers)
@@ -131,13 +190,13 @@ def threading_jobinsert(rightname, headers, jobid):
             print "thread" + content_id
             timestr = time.strftime('%Y-%m-%d %H:%M:%S')
             sql = "insert into right_tmp (rightid, createtime, rightname, url, email, contentid) values (NULL, \'"
-            sql = sql + timestr + "\',\'" + rightname + "\'," + "'',\'" + "516854715@qq.com\'," + contentid + ")"
+            sql = sql + timestr + "\',\'" + rightname + "\'," + "'',\'" + email + "\'," + contentid + ")"
             print sql
             cursor.execute(sql)
             conn.commit()
 
-            sql = "insert into searches (id, name, type, year, keyword, searchnums, lastsearchtime) values (NULL, \'"
-            sql = sql + rightname + "\', 'film', '2018', \'" + rightname + "\', \'0\', \'" + timestr + "\')"
+            sql = "insert into searches (id, name, type, year, keyword, searchnums, lastsearchtime, contentid, apitoken) values (NULL, \'"
+            sql = sql + rightname + "\', 'film', '2018', \'" + rightname + "\', \'0\', \'" + timestr + "\'," + contentid +",\'" + apitoken + "\')"
             print sql
             cursor.execute(sql)
             conn.commit()
