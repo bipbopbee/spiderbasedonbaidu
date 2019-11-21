@@ -51,6 +51,35 @@ app.register_blueprint(appium_blueprint, url_prefix="/appium")
 @app.route('/index', methods=['POST', 'GET'])
 def home():
     return render_template('login.html')
+@app.route('/register', methods=['POST','GET'])
+def register():
+    if request.method == 'POST':
+        username = request.form.get("user")
+        password = request.form.get("passwd")
+        email = request.form.get("email")
+        print username
+        print password
+        print email
+        cursor.execute("select *  from user where username = \'" + username + "\' or email = \'" + email + "\'")
+        row = cursor.fetchall()
+        print row
+        if len(row) == 0:
+            jsonstr = json.loads(usercreate(email, username, {"Authorization": "BHJjhgFTty866r"}))
+            if 'error' in jsonstr:
+                return 'error'
+            else:
+                apitoken = jsonstr['data']['api_token']
+                cursor.execute("insert into user (userid, username, userpassword, email, apitoken, role)  values (NULL, \'" + username +"\',\'" + password + "\', \'" + email + "\', \'" + apitoken + "\', 'basic')")
+                conn.commit()
+                session['username'] = username
+                session['password'] = password
+                session['email'] = email
+                session['apitoken'] = apitoken
+                return url_for("ui")
+        else:
+            t = {'data':'user exists'}
+            return json.dumps(t,ensure_ascii=False)
+            #return url_for("upload")
 @app.route('/login', methods=['POST','GET'])
 def login():
     if request.method == 'POST':
@@ -66,6 +95,7 @@ def login():
         else:
             session.permanent = True
             session['username'] = username
+            session['email'] = row[0][3]
             session['apitoken'] = row[0][4]
             return url_for("ui")
             #return url_for("upload")
