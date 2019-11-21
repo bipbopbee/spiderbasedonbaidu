@@ -232,7 +232,7 @@ def userlist(headers):
     return res.text
 def usercreate(email, name, headers):
     files = {"email":email, "username":name}
-    res = requests.post(BASE_URL + ACTION_USERS_CREATE, headers = headers, files = files)
+    res = requests.post(BASE_URL + ACTION_USERS_CREATE, headers = headers, data = files)
     return res.text
 def userdelete(id, headers):
     res = requests.post(BASE_URL + ACTION_USERS_DELETE + "/" + id, headers = headers)
