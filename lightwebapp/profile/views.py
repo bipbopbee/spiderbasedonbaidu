@@ -1,5 +1,5 @@
 # coding:utf-8
-from flask import Response, jsonify, render_template, abort, session, redirect, request, url_for, flash
+from flask import Response, jsonify, render_template, abort, session, redirect, request, url_for, flash, send_file
 # from flask import Blueprint, request,render_template, jsonify
 # profile_home = Blueprint("profile", __name__)
 from . import profile_home
@@ -81,9 +81,10 @@ def upload_success():  # 按序读出分片内容，并写入新文件
     t.join()
     print(time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
     print ("upload" + content_id)
-    #return content_id + videoname
-    return render_template('profile/upload_ok.html')
-    return render_template('profile/upload_ok.html', userinput=videoname, contentid = content_id, error = gerror['message'], val1=time.time())
+    return content_id + videoname
+    #return render_template('profile/upload_ok.html')
+    return send_file('static/profiles.html')
+    return render_template('upload_ok.html', userinput=videoname, contentid = content_id, error = gerror['message'], val1=time.time())
     #return render_template('index.html')
 @profile_home.route("/", methods=['POST', 'GET'])
 def index():
@@ -137,39 +138,41 @@ def getall():
 @profile_home.route("/upload", methods=['POST', 'GET'])
 def upload():
     if request.method == 'POST':
-        f = request.files['file']
+        # f = request.files['file']
  
-        if not (f and allowed_file(f.filename)):
-            return jsonify({"error": 1001, "msg": "请检查上传的图片类型，仅限于png、PNG、jpg、JPG、bmp"})
+        # if not (f and allowed_file(f.filename)):
+        #     return jsonify({"error": 1001, "msg": "请检查上传的图片类型，仅限于png、PNG、jpg、JPG、bmp"})
  
-        user_input = request.form.get("name")
-        #content_id = ''
-        error = ''
-        basepath = os.path.dirname(__file__)  # 当前文件所在路径
+        # user_input = request.form.get("name")
+        # #content_id = ''
+        # error = ''
+        # basepath = os.path.dirname(__file__)  # 当前文件所在路径
  
-        upload_path = os.path.join(basepath, 'static/videos', secure_filename(f.filename))  # 注意：没有的文件夹一定要先创建，不然会提示没有该路径
-        # upload_path = os.path.join(basepath, 'static/images','test.jpg')  #注意：没有的文件夹一定要先创建，不然会提示没有该路径
-        f.save(upload_path)
+        # upload_path = os.path.join(basepath, 'static/videos', secure_filename(f.filename))  # 注意：没有的文件夹一定要先创建，不然会提示没有该路径
+        # # upload_path = os.path.join(basepath, 'static/images','test.jpg')  #注意：没有的文件夹一定要先创建，不然会提示没有该路径
+        # f.save(upload_path)
         
-        apitoken = session['apitoken'].encode('raw_unicode_escape')
-        headers = {"Authorization":apitoken}
-        print headers
-        # res = insertlocalfile(upload_path, headers)
-        # result = json.loads(res.text)
+        # apitoken = session['apitoken'].encode('raw_unicode_escape')
+        # headers = {"Authorization":apitoken}
+        # print headers
+        # # res = insertlocalfile(upload_path, headers)
+        # # result = json.loads(res.text)
 
-        # if not result['error'] is None:
-        #     error = result['error']['message']
-        # else:
-        #    content_id = result['data']['content']['contend_id']
-        global content_id
-        global gerror
-        jobidstr = asyncinsertlocalfile(upload_path, headers)
-        jobid = json.loads(jobidstr)['data']['job']['id']
-        t = threading.Thread(target = threading_jobinsert, args=(user_input, headers, jobid))
-        t.start()
-        t.join()
-        print "upload" + content_id
-        return render_template('profile/upload_ok.html', userinput=user_input, contentid = content_id, error = gerror['message'], val1=time.time())
+        # # if not result['error'] is None:
+        # #     error = result['error']['message']
+        # # else:
+        # #    content_id = result['data']['content']['contend_id']
+        # global content_id
+        # global gerror
+        # jobidstr = asyncinsertlocalfile(upload_path, headers)
+        # jobid = json.loads(jobidstr)['data']['job']['id']
+        # t = threading.Thread(target = threading_jobinsert, args=(user_input, headers, jobid))
+        # t.start()
+        # t.join()
+        # print "upload" + content_id
+        return send_file('static/profiles.html')
+        #return render_template('profile/upload_ok.html')
+        # return render_template('profile/upload_ok.html', userinput=user_input, contentid = content_id, error = gerror['message'], val1=time.time())
  
     return render_template('upload.html')
 
