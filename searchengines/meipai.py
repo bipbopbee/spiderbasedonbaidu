@@ -21,7 +21,7 @@ from bs4 import BeautifulSoup
 import socket
 socket.setdefaulttimeout(10.0)
 from database.opredis import *
-test_apitoken = ""
+test_apitoken = "aQVJpk02iWjXQeGTV4R9"
 num = 0
 sys.path.append("..")
 from database.searchenginedbHelper import *
@@ -136,7 +136,7 @@ def getrealvideourl(detailurl):
     videourl = js2python(base64str)
     return "https:" + videourl
 
-def start_search(keyword):
+def start_search(keyword,apitoken):
     global num
     data = dbOperator.selectOne((keyword.decode('gbk'), '美拍', apitoken))
     dt = datetime.datetime.now()
@@ -173,7 +173,7 @@ def main(argv):
     url = "https://www.meipai.com/search/all?"
 
     keyword = keyword.strip()
-    start_search(keyword)
+    start_search(keyword, test_apitoken)
     return
     data = getsearchpagebykeyword(url, keyword)
 
