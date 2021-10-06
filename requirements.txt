@@ -68,7 +68,7 @@ queuelib==1.5.0
 readability-lxml==0.6.2
 requests==2.13.0
 scapy==2.4.2
-Scrapy==1.6.0
+Scrapy==1.8.1
 service-identity==18.1.0
 simplejson==3.10.0
 singledispatch==3.4.0.3
