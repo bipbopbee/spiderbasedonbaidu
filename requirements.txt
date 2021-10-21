@@ -4,7 +4,7 @@ asn1crypto==0.24.0
 astroid==1.6.6
 attrs==19.1.0
 Automat==0.7.0
-Babel==2.6.0
+Babel==2.9.1
 backports-abc==0.5
 backports.functools-lru-cache==1.5
 beautifulsoup4==4.6.0
